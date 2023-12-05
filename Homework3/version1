@@ -1,0 +1,152 @@
+def s_to_l(s, out_flag):
+    # 判断是否是负数并把数字逆序
+    flag = out_flag
+    if s[0] == '-':
+        flag = not flag
+        s_reversed = s[:0:-1]
+    elif s[0] == '+':
+        s_reversed = s[:0:-1]
+    else:
+        s_reversed = s[::-1]
+        
+    # 将字符串转化成list(reversed)
+    lst = [int(x) for x in s_reversed]
+    return lst, flag, len(lst)
+
+
+def l_to_s(lst, flag):
+    # 删除多余的0
+    l = len(lst)
+    for i in range(l-1, -1, -1):
+        if lst[i] != 0:
+            break
+        else:
+            del lst[i]
+            
+    # 将list转换回string
+    if flag == True:
+        lst.append('-')
+    lst_reversed = lst[::-1]
+    s = ''.join(str(x) for x in lst_reversed)
+    return s
+
+
+def two_init(str1, str2, out_flag):
+    lst1, flag1, l1= s_to_l(str1, False)
+    lst2, flag2, l2= s_to_l(str2, out_flag)
+    return lst1, flag1, l1, lst2, flag2, l2
+
+
+def add_sub_init(str1, str2, out_flag):
+    lst1, flag1, l1, lst2, flag2, l2= two_init(str1, str2, out_flag)
+    l_valid = max(l1, l2)
+    # 加法判断
+    if flag1 == flag2:
+        if l1 > l2:
+            lst2 += [0] * (l1 - l2)
+            return add_core(lst1, lst2, flag1, l_valid)
+        elif l1 == l2:
+            return add_core(lst1, lst2, flag1, l_valid)
+        else:
+            lst1 += [0] * (l2 - l1)
+            return add_core(lst2, lst1, flag2, l_valid) 
+    # 减法判断
+    if l1 > l2:
+        lst2 += [0] * (l1 - l2)
+        return sub_core(lst1, lst2, flag1, l_valid)
+    elif l1 < l2:
+        lst1 += [0] * (l2 - l1)
+        return sub_core(lst2, lst1, flag2, l_valid)
+    else:
+        for i in range(l1-1, -1, -1):
+            if lst1[i] < lst2[i]:
+                break
+        else:
+            return sub_core(lst2, lst1, flag2, l_valid)
+        return sub_core(lst1, lst2, flag1, l_valid)
+    
+
+def add_core(lst1, lst2, flag, l_valid):
+    # 初始化
+    lst_sum = []
+    sum_more = 0
+    
+    # 共同位相加
+    for i in range(0, l_valid):
+        sum_tmp = lst1[i] + lst2[i] + sum_more
+        sum_digit = sum_tmp % 10
+        sum_more = sum_tmp // 10
+        lst_sum.append(sum_digit)
+    
+    # # 多余位处理
+    # if len(lst1) == len(lst2):
+    #     lst_sum.append(sum_more)
+    # else:
+    #     lst_sum.append(sum_more+lst1[l_valid])
+    #     try:
+    #         lst_sum += lst1[l_valid+1:]
+    #     except IndexError:
+    #         pass
+    return l_to_s(lst_sum, flag)
+
+
+def sub_core(lst1, lst2, flag, l_valid):
+    # 初始化
+    lst_sub = []
+    sub_more = 0
+    
+    # 逐位相减
+    for i in range(0, l_valid):
+        sub_tmp = 10 + lst1[i] - lst2[i] - sub_more
+        sub_digit = sub_tmp % 10
+        sub_more = 1 - (sub_tmp // 10)
+        lst_sub.append(sub_digit)
+        
+    # 多余位处理
+    if len(lst1) == len(lst2):
+        pass
+    else:
+        lst_sub.append(lst1[l_valid]-sub_more)
+        try:
+            lst_sub += lst1[l_valid+1:]
+        except IndexError:
+            pass
+    return l_to_s(lst_sub, flag)
+
+def add(str1, str2):
+    out_flag = False
+    return add_sub_init(str1, str2, out_flag)
+
+
+def sub(str1, str2):
+    out_flag = True
+    return add_sub_init(str1, str2, out_flag)
+
+
+def mul(str1, str2):
+    # 初始化
+    out_flag = False
+    lst1, flag1, l1, lst2, flag2, l2= two_init(str1, str2, out_flag)
+    flag = (flag1 != flag2)
+    
+    # 获取每一组数据
+    
+    # 将每一组数据相加
+    
+    return
+
+
+def div(str1, str2):
+    """ str1 / str2
+    return quotient and remainder
+    """
+    return
+
+
+def pow(str1, n):
+    return
+
+
+s1 = '123456'
+s2 = '1'
+print(sub(s1, s2))
