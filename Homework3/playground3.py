@@ -4,7 +4,7 @@ def pow(str1, n):
     # 0. 转换str
     lst1, flag_tmp = s_to_l(str1, False)
     # 转换计算得到的list为string
-    return l_to_s(pow_core(lst1, n))
+    return l_to_s(pow_core(lst1, n), False)
     
 
 
@@ -13,14 +13,14 @@ def pow_core(lst1, n):
     
     # 1. 基本情况
     if n == 0:
-        return 1
+        return [1]
     # 2. 利用递归求出一半核心函数的幂
     # 要求tmp仍然为list
     tmp = pow_core(lst1, n//2)
     
     # 3. 递归主体部分
-    tmp = mul(tmp, tmp)
-    return tmp if n%2 == 0 else mul(tmp, lst1)
+    tmp = mul_core(tmp, tmp)
+    return tmp if n%2 == 0 else mul_core(tmp, lst1)
     
     
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,6 +130,7 @@ def mul_core(lst1, lst2): # lst1和lst2相乘
         lst_mul.append(sum_more)
         
     return lst_mul
+
 
 def mul(str1, str2):
     # 初始化
@@ -265,6 +266,6 @@ def two_init(str1, str2, out_flag):
     return lst1, flag1, lst2, flag2
 
 
-s1 = '123456'
-s2 = '789'
-print(mul(s1, s2))
+s1 = '2'
+s2 = 10
+print(pow(s1, s2))
