@@ -97,9 +97,7 @@ def div(str1, str2):
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 乘法函数
-# 目标：创建mul_core以直接处理list， 分离mul功能
-
-def single_mul(lst, a, front_blank, back_blank):
+def single_mul(lst, a, front_blank, back_blank): # 用于lst1和单个数相乘
     new_lst = [0] * front_blank
     lst_tmp = [x*a for x in lst]
     new_lst += lst_tmp
@@ -107,35 +105,40 @@ def single_mul(lst, a, front_blank, back_blank):
     return new_lst
 
 
-def mul(str1, str2):
-    # 初始化
-    out_flag = False
-    lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
-    flag = (flag1 != flag2)
-    
+def mul_core(lst1, lst2): # lst1和lst2相乘
     # 获取每一组(行）数据
     row = []
     l_blank = len(lst2) - 1
     for i in range(0, len(lst2)):
         row.append(single_mul(lst1, lst2[i], i, l_blank-i))
     
-    # 将每一组数据的列相加
-    num_column = len(lst1) + len(lst2) - 1
-    sum_column = [0] * num_column 
-    for i in range(0, num_column):
+    # 将每一组数据的列分别相加
+    column_num = len(lst1) + len(lst2) - 1
+    column_sum = [0] * column_num 
+    for i in range(0, column_num):
         for x in row:
-            sum_column[i] += x[i]
+            column_sum[i] += x[i]
     
     # 完成每一列的进位
     lst_mul = []
     sum_more = 0
-    for y in sum_column:
+    for y in column_sum:
         sum_tmp = y + sum_more 
         lst_mul.append(sum_tmp%10)
         sum_more = sum_tmp // 10
     if sum_more != 0:
         lst_mul.append(sum_more)
-    return l_to_s(lst_mul, flag)
+        
+    return lst_mul
+
+def mul(str1, str2):
+    # 初始化
+    out_flag = False
+    lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
+    flag = (flag1 != flag2)
+    
+    # 计算乘积并返回字符串
+    return l_to_s(mul_core(lst1, lst2), flag)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -262,6 +265,6 @@ def two_init(str1, str2, out_flag):
     return lst1, flag1, lst2, flag2
 
 
-s1 = '22'
-s2 = '31'
-print(sub(s1, s2))
+s1 = '123456'
+s2 = '789'
+print(mul(s1, s2))
