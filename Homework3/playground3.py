@@ -1,98 +1,74 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 幂函数
-def pow(str1, n):
-    # 0. 转换str
-    lst1, flag_tmp = s_to_l(str1, False)
-    # 转换计算得到的list为string
-    return l_to_s(pow_core(lst1, n), False)
+# 加减法函数
+def add_sub_init(str1, str2, out_flag): # 加减法判断函数
+    lst1, flag1, lst2, flag2 = two_init(str1, str2, out_flag)
+    l_valid = max(len(lst1), len(lst2))
     
-
-
-def pow_core(lst1, n):
-    # to-do: 利用二分法求解pow
-    
-    # 1. 基本情况
-    if n == 0:
-        return [1]
-    # 2. 利用递归求出一半核心函数的幂
-    # 要求tmp仍然为list
-    tmp = pow_core(lst1, n//2)
-    
-    # 3. 递归主体部分
-    tmp = mul_core(tmp, tmp)
-    return tmp if n%2 == 0 else mul_core(tmp, lst1)
-    
-    
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 除法函数
-def div_result(quotient, remainder):
-    # quo_tmp = ''.join(str(x) for x in quotient)
-    quo_tmp = l_to_s(quotient, False)
-    rem_tmp = l_to_s(remainder, False)
-    if quo_tmp == '' :
-        quo_tmp = '0'
-    if rem_tmp == '':
-        rem_tmp = '0'
-    return quo_tmp, rem_tmp
-
-
-def cmp(lst1, lst2):
-    if len(lst1) > len(lst2):
-        return True
-    elif len(lst1) == len(lst2):
-        for i in range(len(lst1)-1, -1, -1):
-            if lst1[i] > lst2[i]:
-                return True
-            elif lst1[i] < lst2[i]:
-                return False
-            else:
-                continue
-        return True       
-    
-    
-def div(str1, str2):
-    # 初始化
-    lst1, flag1, lst2, flag2= two_init(str1, str2, False)
-    quotient = [0] * len(lst1)
-    
-    # 逐级进行减法(lst1的位数高于lst2时)
-    while len(lst1) > len(lst2):  
-        k = 0 
-        divisor_tmp = []
-        while len(lst1) > len(divisor_tmp) + len(lst2): # 对减数升位以简化运算
-            divisor_tmp.append(0)
-        if cmp(lst1, divisor_tmp+lst2) == False:
-            del divisor_tmp[-1]
-        divisor_tmp += lst2
-        while len(lst1) > len(divisor_tmp): # 两数位数不等时的减法
-            lst1 , flag_tmp = sub_core(lst1, divisor_tmp, False, len(divisor_tmp))
-            if lst1[-1] == 0: lst1.pop(-1) 
-            k += 1
-        while True: # 在两数位数相等时的减法
-            if cmp(lst1, divisor_tmp):
-                lst1 , flag_tmp =  sub_core(lst1, divisor_tmp, False, len(lst1))
-                k += 1
-                continue
-            else:
-                break
-        quotient[len(divisor_tmp) - len(lst2)] = k 
-        while len(lst1) > len(lst2): # 消去lst1中多余的0
-            if lst1[-1] == 0:
-                del lst1[-1]
-            else:
-                break
-
-    # 最后进行的同级减法
-    k = 0
-    while True:
-        if cmp(lst1, lst2):
-            lst1 , flag_tmp =  sub_core(lst1, lst2, False, len(lst1))
-            k += 1
-            continue
+    # 加法判断及处理
+    if flag1 == flag2:
+        if len(lst1) > len(lst2):
+            lst2 += [0] * (len(lst1) - len(lst2))
+            return add_core(lst1, lst2, flag1, l_valid)
+        elif len(lst1) == len(lst2):
+            return add_core(lst1, lst2, flag1, l_valid)
         else:
-            break
-    quotient[0] = k
-    return div_result(quotient, lst1)    
+            lst1 += [0] * (len(lst2) - len(lst1))
+            return add_core(lst2, lst1, flag2, l_valid) 
+        
+    # 减法判断及处理
+    if len(lst1) > len(lst2):
+        lst2 += [0] * (len(lst1) - len(lst2))
+        return sub_core(lst1, lst2, flag1, l_valid)
+    elif len(lst1) < len(lst2):
+        lst1 += [0] * (len(lst2) - len(lst1))
+        return sub_core(lst2, lst1, flag2, l_valid)
+    else:
+        if cmp(lst1, lst2):
+            return sub_core(lst1, lst2, flag1, l_valid)
+        else:
+            return sub_core(lst2, lst1, flag2, l_valid)
+            
+        
+def add_core(lst1, lst2, flag, l_valid): # list加法主体
+    # 初始化
+    lst_sum = []
+    sum_more = 0
+    
+    # 相加
+    for i in range(0, l_valid):
+        sum_tmp = lst1[i] + lst2[i] + sum_more
+        sum_digit = sum_tmp % 10
+        sum_more = sum_tmp // 10
+        lst_sum.append(sum_digit)
+    
+    return lst_sum, flag
+
+
+def add(str1, str2): # 加法过渡函数
+    out_flag = False
+    lst_ans, flag = add_sub_init(str1, str2, out_flag)
+    return l_to_s(lst_ans, flag)
+
+
+def sub_core(lst1, lst2, flag, l_valid): # list减法主体
+    # 初始化 
+    lst_sub = []
+    sub_more = 0
+    
+    # 逐位相减
+    for i in range(0, l_valid):
+        sub_tmp = 10 + lst1[i] - lst2[i] - sub_more
+        sub_digit = sub_tmp % 10
+        sub_more = 1 - (sub_tmp // 10)
+        lst_sub.append(sub_digit)
+        
+    return lst_sub, flag
+
+
+def sub(str1, str2): # 减法过渡函数
+    out_flag = True
+    lst_ans, flag = add_sub_init(str1, str2, out_flag)
+    return l_to_s(lst_ans, flag)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -105,7 +81,7 @@ def single_mul(lst, a, front_blank, back_blank): # 用于lst1和单个数相乘
     return new_lst
 
 
-def mul_core(lst1, lst2): # lst1和lst2相乘
+def mul_core(lst1, lst2): # list乘积主体
     # 获取每一组(行）数据
     row = []
     l_blank = len(lst2) - 1
@@ -132,7 +108,7 @@ def mul_core(lst1, lst2): # lst1和lst2相乘
     return lst_mul
 
 
-def mul(str1, str2):
+def mul(str1, str2): # 乘积过渡函数
     # 初始化
     out_flag = False
     lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
@@ -143,90 +119,86 @@ def mul(str1, str2):
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 加法函数
-def add_sub_init(str1, str2, out_flag):
-    lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
-    l_valid = max(len(lst1), len(lst2))
-    # 加法判断
-    if flag1 == flag2:
+# 除法函数
+def div_result(quotient, remainder): # 将结果从list形式转换为string形式
+    quo_tmp = l_to_s(quotient, False)
+    rem_tmp = l_to_s(remainder, False)
+    
+    # 空string处理
+    if quo_tmp == '' :
+        quo_tmp = '0'
+    if rem_tmp == '':
+        rem_tmp = '0'
+    return quo_tmp, rem_tmp
+
+
+def div_core(lst1, lst2): # list除法主体
+    quotient = [0] * len(lst1)
+    
+    # 逐级进行减法(lst1的位数高于lst2时)
+    while len(lst1) > len(lst2):  
+        k = 0 
+        up_digit = 0
+        divisor_tmp = []
+        while len(lst1) > len(divisor_tmp) + len(lst2): # 对减数升位以简化运算
+            divisor_tmp.append(0)
+            up_digit += 1
+        if cmp(lst1, divisor_tmp+lst2) == False:
+            del divisor_tmp[-1]
+            up_digit -= 1
+        divisor_tmp += lst2 
+        divisor_tmp += [0] * (len(lst1) - len(divisor_tmp))
+        while cmp(lst1, divisor_tmp):
+            lst1, flag_tmp = sub_core(lst1, divisor_tmp, False, len(lst1))
+            k += 1
+        quotient[up_digit] = k
         
-        if len(lst1) > len(lst2):
-            lst2 += [0] * (len(lst1) - len(lst2))
-            return add_core(lst1, lst2, flag1, l_valid)
-        elif len(lst1) == len(lst2):
-            return add_core(lst1, lst2, flag1, l_valid)
-        else:
-            lst1 += [0] * (len(lst2) - len(lst1))
-            return add_core(lst2, lst1, flag2, l_valid) 
-    # 减法判断
-    if len(lst1) > len(lst2):
-        lst2 += [0] * (len(lst1) - len(lst2))
-        return sub_core(lst1, lst2, flag1, l_valid)
-    elif len(lst1) < len(lst2):
-        lst1 += [0] * (len(lst2) - len(lst1))
-        return sub_core(lst2, lst1, flag2, l_valid)
-    else:
-        if cmp(lst1, lst2):
-            return sub_core(lst1, lst2, flag1, l_valid)
-        else:
-            return sub_core(lst2, lst1, flag2, l_valid)
+        while len(lst1) > len(lst2): # 消去lst1中多余的0
+            if lst1[-1] == 0:
+                del lst1[-1]
+            else:
+                break
             
-        
-def add_core(lst1, lst2, flag, l_valid):
-    # 初始化
-    lst_sum = []
-    sum_more = 0
+    # 最后进行的同级减法
+    k = 0
+    while cmp(lst1, lst2):
+        lst1, flag_tmp = sub_core(lst1, lst2, False, len(lst1))
+        k += 1
+    quotient[0] = k
     
-    # 相加
-    for i in range(0, l_valid):
-        sum_tmp = lst1[i] + lst2[i] + sum_more
-        sum_digit = sum_tmp % 10
-        sum_more = sum_tmp // 10
-        lst_sum.append(sum_digit)
-    
-    return lst_sum, flag
+    return quotient, lst1
 
 
-def add(str1, str2):
-    out_flag = False
-    lst_ans, flag = add_sub_init(str1, str2, out_flag)
-    return l_to_s(lst_ans, flag)
+def div(str1, str2): # 除法过渡函数
+    lst1, flag1, lst2, flag2= two_init(str1, str2, False)
+    
+    quotient, remainder= div_core(lst1, lst2)
+    return div_result(quotient, remainder)  
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 减法函数
-def sub_core(lst1, lst2, flag, l_valid):
-    # 初始化
-    lst_sub = []
-    sub_more = 0
+# 幂函数
+def pow(str1, n):
+    # 转换string
+    lst1, flag_tmp = s_to_l(str1, False)
     
-    # 逐位相减
-    for i in range(0, l_valid):
-        sub_tmp = 10 + lst1[i] - lst2[i] - sub_more
-        sub_digit = sub_tmp % 10
-        sub_more = 1 - (sub_tmp // 10)
-        lst_sub.append(sub_digit)
-        
-    # 多余位处理
-    if len(lst1) == len(lst2):
-        pass
-    else:
-        lst_sub.append(lst1[l_valid]-sub_more)
-        try:
-            lst_sub += lst1[l_valid+1:]
-        except IndexError:
-            pass
-    return lst_sub, flag
+    # 转换计算得到的list为string
+    return l_to_s(pow_core(lst1, n), False)
+    
 
-
-def sub(str1, str2):
-    out_flag = True
-    lst_ans, flag = add_sub_init(str1, str2, out_flag)
-    return l_to_s(lst_ans, flag)
-
+def pow_core(lst1, n):
+    # 基本情况
+    if n == 0:
+        return [1]
+    
+    # 递归主体部分
+    tmp = pow_core(lst1, n//2)
+    tmp = mul_core(tmp, tmp)
+    return tmp if n%2 == 0 else mul_core(tmp, lst1)
+    
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 转换及初始化函数
+# 转换及其他功能函数
 def s_to_l(s, out_flag):
     # 判断是否是负数并把数字逆序
     flag = out_flag
@@ -266,6 +238,20 @@ def two_init(str1, str2, out_flag):
     return lst1, flag1, lst2, flag2
 
 
-s1 = '2'
-s2 = 10
-print(pow(s1, s2))
+def cmp(lst1, lst2):
+    if len(lst1) > len(lst2):
+        return True
+    elif len(lst1) == len(lst2):
+        for i in range(len(lst1)-1, -1, -1):
+            if lst1[i] > lst2[i]:
+                return True
+            elif lst1[i] < lst2[i]:
+                return False
+            else:
+                continue
+        return True       
+
+
+s1 = '12345'
+s2 = '25'
+print(div(s1, s2))
