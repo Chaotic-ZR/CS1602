@@ -170,8 +170,10 @@ def div_core(lst1, lst2): # list除法主体
 
 
 def div(str1, str2): # 除法过渡函数
+    if str2 == '0':
+        print("除数不为0")
+        return
     lst1, flag1, lst2, flag2= two_init(str1, str2, False)
-    
     quotient, remainder= div_core(lst1, lst2)
     return div_result(quotient, remainder)  
 
@@ -179,6 +181,8 @@ def div(str1, str2): # 除法过渡函数
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 幂函数
 def pow(str1, n):
+    if str1 == '0':
+        return '0'
     # 转换string
     lst1, flag_tmp = s_to_l(str1, False)
     
@@ -229,7 +233,7 @@ def l_to_s(lst, flag):
         lst.append('-')
     lst_reversed = lst[::-1]
     s = ''.join(str(x) for x in lst_reversed)
-    return s
+    return '0' if s == '' or s == '-' else s
 
 
 def two_init(str1, str2, out_flag):
@@ -252,6 +256,16 @@ def cmp(lst1, lst2):
         return True       
 
 
-s1 = '12345'
-s2 = '25'
+s1 = '-1'
+s2 = '1'
+print(add(s1, s2))
+print(int(s1)+int(s2))
+print(sub(s1, s2))
+print(int(s1)-int(s2))
+print(mul(s1, s2))
+print(int(s1)*int(s2))
 print(div(s1, s2))
+print(int(s1)//int(s2), int(s1)%int(s2))
+
+print(pow('0', 1))
+print(div('1', '0'))
