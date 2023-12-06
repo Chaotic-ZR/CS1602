@@ -2,7 +2,7 @@
 # 幂函数
 def pow(str1, n):
     # 0. 转换str
-    lst1, flag_tmp, l1 = s_to_l(str1, False)
+    lst1, flag_tmp = s_to_l(str1, False)
     # 转换计算得到的list为string
     return l_to_s(pow_core(lst1, n))
     
@@ -52,8 +52,8 @@ def cmp(lst1, lst2):
     
 def div(str1, str2):
     # 初始化
-    lst1, flag1, l1, lst2, flag2, l2= two_init(str1, str2, False)
-    quotient = [0] * l1
+    lst1, flag1, lst2, flag2= two_init(str1, str2, False)
+    quotient = [0] * len(lst1)
     
     # 逐级进行减法(lst1的位数高于lst2时)
     while len(lst1) > len(lst2):  
@@ -97,6 +97,8 @@ def div(str1, str2):
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 乘法函数
+# 目标：创建mul_core以直接处理list， 分离mul功能
+
 def single_mul(lst, a, front_blank, back_blank):
     new_lst = [0] * front_blank
     lst_tmp = [x*a for x in lst]
@@ -108,17 +110,17 @@ def single_mul(lst, a, front_blank, back_blank):
 def mul(str1, str2):
     # 初始化
     out_flag = False
-    lst1, flag1, l1, lst2, flag2, l2= two_init(str1, str2, out_flag)
+    lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
     flag = (flag1 != flag2)
     
     # 获取每一组(行）数据
     row = []
-    l_blank = l2 - 1
-    for i in range(0, l2):
+    l_blank = len(lst2) - 1
+    for i in range(0, len(lst2)):
         row.append(single_mul(lst1, lst2[i], i, l_blank-i))
     
     # 将每一组数据的列相加
-    num_column = l1 + l2 - 1
+    num_column = len(lst1) + len(lst2) - 1
     sum_column = [0] * num_column 
     for i in range(0, num_column):
         for x in row:
@@ -139,25 +141,25 @@ def mul(str1, str2):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 加法函数
 def add_sub_init(str1, str2, out_flag):
-    lst1, flag1, l1, lst2, flag2, l2= two_init(str1, str2, out_flag)
-    l_valid = max(l1, l2)
+    lst1, flag1, lst2, flag2= two_init(str1, str2, out_flag)
+    l_valid = max(len(lst1), len(lst2))
     # 加法判断
     if flag1 == flag2:
         
-        if l1 > l2:
-            lst2 += [0] * (l1 - l2)
+        if len(lst1) > len(lst2):
+            lst2 += [0] * (len(lst1) - len(lst2))
             return add_core(lst1, lst2, flag1, l_valid)
-        elif l1 == l2:
+        elif len(lst1) == len(lst2):
             return add_core(lst1, lst2, flag1, l_valid)
         else:
-            lst1 += [0] * (l2 - l1)
+            lst1 += [0] * (len(lst2) - len(lst1))
             return add_core(lst2, lst1, flag2, l_valid) 
     # 减法判断
-    if l1 > l2:
-        lst2 += [0] * (l1 - l2)
+    if len(lst1) > len(lst2):
+        lst2 += [0] * (len(lst1) - len(lst2))
         return sub_core(lst1, lst2, flag1, l_valid)
-    elif l1 < l2:
-        lst1 += [0] * (l2 - l1)
+    elif len(lst1) < len(lst2):
+        lst1 += [0] * (len(lst2) - len(lst1))
         return sub_core(lst2, lst1, flag2, l_valid)
     else:
         if cmp(lst1, lst2):
@@ -234,7 +236,7 @@ def s_to_l(s, out_flag):
         
     # 将字符串转化成list(reversed)
     lst = [int(x) for x in s_reversed]
-    return lst, flag, len(lst)
+    return lst, flag
 
 
 def l_to_s(lst, flag):
@@ -255,11 +257,11 @@ def l_to_s(lst, flag):
 
 
 def two_init(str1, str2, out_flag):
-    lst1, flag1, l1= s_to_l(str1, False)
-    lst2, flag2, l2= s_to_l(str2, out_flag)
-    return lst1, flag1, l1, lst2, flag2, l2
+    lst1, flag1= s_to_l(str1, False)
+    lst2, flag2= s_to_l(str2, out_flag)
+    return lst1, flag1, lst2, flag2
 
 
-s1 = '66'
-s2 = 1
-print(pow(s1, s2))
+s1 = '22'
+s2 = '31'
+print(sub(s1, s2))
