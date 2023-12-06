@@ -178,7 +178,7 @@ def pow(str1, n): # 幂过渡函数
     return l_to_s(pow_core(lst1, n), False)
     
 
-def pow_core(lst1, n):
+def pow_core(lst1, n): # 幂核心函数
     # 基本情况
     if n == 0:
         return [1]
