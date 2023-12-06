@@ -120,18 +120,6 @@ def mul(str1, str2): # 乘积过渡函数
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 除法函数
-def div_result(quotient, remainder): # 将结果从list形式转换为string形式
-    quo_tmp = l_to_s(quotient, False)
-    rem_tmp = l_to_s(remainder, False)
-    
-    # 空string处理
-    if quo_tmp == '' :
-        quo_tmp = '0'
-    if rem_tmp == '':
-        rem_tmp = '0'
-    return quo_tmp, rem_tmp
-
-
 def div_core(lst1, lst2): # list除法主体
     quotient = [0] * len(lst1)
     
@@ -175,7 +163,7 @@ def div(str1, str2): # 除法过渡函数
         return
     lst1, flag1, lst2, flag2= two_init(str1, str2, False)
     quotient, remainder= div_core(lst1, lst2)
-    return div_result(quotient, remainder)  
+    return l_to_s(quotient, False), l_to_s(remainder, False)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -253,7 +241,7 @@ def cmp(lst1, lst2): # 比较大小(lst1>=lst2返回True)
                 return False
             else:
                 continue
-        return True       
+        return True    
 
 
 # 样例测试

@@ -120,18 +120,6 @@ def mul(str1, str2): # 乘积过渡函数
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 除法函数
-def div_result(quotient, remainder): # 将结果从list形式转换为string形式
-    quo_tmp = l_to_s(quotient, False)
-    rem_tmp = l_to_s(remainder, False)
-    
-    # 空string处理
-    if quo_tmp == '' :
-        quo_tmp = '0'
-    if rem_tmp == '':
-        rem_tmp = '0'
-    return quo_tmp, rem_tmp
-
-
 def div_core(lst1, lst2): # list除法主体
     quotient = [0] * len(lst1)
     
@@ -175,7 +163,7 @@ def div(str1, str2): # 除法过渡函数
         return
     lst1, flag1, lst2, flag2= two_init(str1, str2, False)
     quotient, remainder= div_core(lst1, lst2)
-    return div_result(quotient, remainder)  
+    return l_to_s(quotient, False), l_to_s(remainder, False)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -203,7 +191,7 @@ def pow_core(lst1, n):
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 转换及其他功能函数
-def s_to_l(s, out_flag):
+def s_to_l(s, out_flag): # 字符串转换为列表
     # 判断是否是负数并把数字逆序
     flag = out_flag
     if s[0] == '-':
@@ -219,7 +207,7 @@ def s_to_l(s, out_flag):
     return lst, flag
 
 
-def l_to_s(lst, flag):
+def l_to_s(lst, flag): # 列表转换成字符串
     # 删除多余的0
     l = len(lst)
     for i in range(l-1, -1, -1):
@@ -236,13 +224,13 @@ def l_to_s(lst, flag):
     return '0' if s == '' or s == '-' else s
 
 
-def two_init(str1, str2, out_flag):
+def two_init(str1, str2, out_flag): # 初始化函数
     lst1, flag1= s_to_l(str1, False)
     lst2, flag2= s_to_l(str2, out_flag)
     return lst1, flag1, lst2, flag2
 
 
-def cmp(lst1, lst2):
+def cmp(lst1, lst2): # 比较大小(lst1>=lst2返回True)
     if len(lst1) > len(lst2):
         return True
     elif len(lst1) == len(lst2):
@@ -253,11 +241,11 @@ def cmp(lst1, lst2):
                 return False
             else:
                 continue
-        return True       
+        return True    
 
 
-s1 = '-1'
-s2 = '1'
+s1 = '1'
+s2 = '2'
 print(add(s1, s2))
 print(int(s1)+int(s2))
 print(sub(s1, s2))
