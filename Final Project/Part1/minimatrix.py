@@ -31,15 +31,20 @@ class Matrix:
 			 [2 3]]
 	"""
 	def __init__(self, data=None, dim=None, init_value=0):
-		# self.data
-		# self.dim
-		pass
+		if data != None: # 输入data不为空的情况
+			self.data = data
+			self.dim = (len(data), len(data[0]))
+		elif dim == None: # data和dim全为空的情况
+			raise ValueError("data和dim不能全为None")
+		else: # data为空，dim和init_value决定矩阵的情况
+			self.data = [[init_value for column_num in range(0, dim[1])] for row_num in range(0, dim[0])]
+			self.dim = dim
 
 	def shape(self):
 		r"""
 		返回矩阵的形状 dim
 		"""
-		pass
+		return self.dim
 
 	def reshape(self, newdim):
 		r"""
@@ -53,7 +58,18 @@ class Matrix:
 		Returns:
 			Matrix: 一个 Matrix 类型的返回结果, 表示 reshape 得到的结果
 		"""
-		pass
+		if newdim[0]*newdim[1] != self.dim[0]*self.dim[1]:
+			raise ValueError("拉伸前后元素数量不相等")
+		else:
+			single_row_matrix = [self.data[row_num][column_num] for row_num in range(0, self.dim[0]) for column_num in range(0, self.dim[1])] # 把原矩阵化为单层list
+			new_matrix = []
+			i = 0
+			for row_num in range(0, newdim[0]):
+				new_matrix.append([])
+				for column_num in range(0, newdim[1]):
+					new_matrix[row_num].append(single_row_matrix[i])
+					i += 1
+		return new_matrix
 
 	def dot(self, other):
 		r"""
@@ -476,3 +492,7 @@ def vectorize(func):
 if __name__ == "__main__":
 	print("test here")
 	pass
+
+
+m1 = Matrix([[1, 2, 3], [2, 3, 4]])
+m2 = m1.reshape((6, 2))
