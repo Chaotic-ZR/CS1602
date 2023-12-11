@@ -60,15 +60,15 @@ class Matrix:
 		"""
 		if newdim[0]*newdim[1] != self.dim[0]*self.dim[1]:
 			raise ValueError("拉伸前后元素数量不相等")
-		else:
-			single_row_matrix = [self.data[row_num][column_num] for row_num in range(0, self.dim[0]) for column_num in range(0, self.dim[1])] # 把原矩阵化为单层list
-			new_matrix = []
-			i = 0
-			for row_num in range(0, newdim[0]):
-				new_matrix.append([])
-				for column_num in range(0, newdim[1]):
-					new_matrix[row_num].append(single_row_matrix[i])
-					i += 1
+		
+		single_row_matrix = [self.data[row_num][column_num] for row_num in range(0, self.dim[0]) for column_num in range(0, self.dim[1])] # 把原矩阵化为单层list
+		new_matrix = []
+		i = 0
+		for row_num in range(0, newdim[0]):
+			new_matrix.append([])
+			for column_num in range(0, newdim[1]):
+				new_matrix[row_num].append(single_row_matrix[i])
+				i += 1
 		return new_matrix
 
 	def dot(self, other):
@@ -88,7 +88,15 @@ class Matrix:
 			>>> [[ 7 10]
 				 [15 22]]
 		"""
-		pass
+		if self.dim[1] != other.dim[0]: # 排除特殊情况
+			raise ValueError("矩阵无法相乘")
+
+		new_matrix = Matrix(None, (self.dim[0], other.dim[1]), 0)
+		for n_row1 in range(0, self.dim[0]):
+			for n_col2 in range(0, other.dim[1]):
+				for joint_i in range(0, self.dim[1]):
+					new_matrix.data[n_row1][n_col2] += self.data[n_row1][joint_i] * other.data[joint_i][n_col2]
+		return new_matrix.data
 
 	def T(self):
 		r"""
@@ -108,7 +116,8 @@ class Matrix:
 				 [2 5]
 				 [3 6]]
 		"""
-		pass 
+		new_matrix = [[row[num_col] for row in self.data] for num_col in range(self.dim[1])]
+		return new_matrix
 
 	def sum(self, axis=None): 
 		r"""
@@ -133,7 +142,19 @@ class Matrix:
 			>>> [[6]
 				 [15]]
 		"""
-		pass
+		# sum all
+		if axis == None:
+			list_of_element = [row[num_col] for row in self.data for num_col in range(self.dim[1])]
+			sum_matrix = [[sum(list_of_element)]] 
+		# sum by column(not finished, wait for the transpose)
+		elif axis == 0:
+			sum_matrix = [[]]
+
+		# sum by row
+		elif axis == 1:
+			sum_matrix = [[sum(row) for row in self.data] for num_col in range(self.dim[1])]
+			
+			
 
 	def copy(self):
 		r"""
@@ -142,7 +163,8 @@ class Matrix:
 		Returns:
 			Matrix: 一个self的备份
 		"""
-		pass
+		new_matrix = Matrix(data=self.data)
+		return new_matrix
 
 	def Kronecker_product(self, other):
 		r"""
@@ -154,7 +176,8 @@ class Matrix:
 		Returns:
 			Matrix: Kronecke product 的计算结果
 		"""
-		pass
+		new_matrix = [[x*y for x in row1 for y in row2] for row1 in self.data for row2 in other.data]
+		return new_matrix
 	
 	def __getitem__(self, key):
 		r"""
@@ -191,7 +214,13 @@ class Matrix:
 				 [4 5]
 				 [8 9]]
 		"""
-		pass
+		# row_slice, col_slice = key
+		# # single element
+		# if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
+		# 	return self.data[row_slice][col_slice]
+		# # slice
+		# else:
+		# 	new_matrix = [for row in self.data[row_slice]]
 
 	def __setitem__(self, key, value):
 		r"""
@@ -495,4 +524,8 @@ if __name__ == "__main__":
 
 
 m1 = Matrix([[1, 2, 3], [2, 3, 4]])
-m2 = m1.reshape((6, 2))
+print(m1.T())
+# m2 = Matrix([[1],
+# 			 [1],
+# 			 [1]])
+# print(m1.dot(m2).data)
