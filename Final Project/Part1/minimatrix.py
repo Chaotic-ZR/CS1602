@@ -214,13 +214,30 @@ class Matrix:
 				 [4 5]
 				 [8 9]]
 		"""
-		# row_slice, col_slice = key
-		# # single element
-		# if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
-		# 	return self.data[row_slice][col_slice]
-		# # slice
-		# else:
-		# 	new_matrix = [for row in self.data[row_slice]]
+		
+		row_slice, col_slice = key
+		# single element
+		if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
+			return self.data[row_slice][col_slice]
+		
+		# slice
+		# initialize the slice
+		r_st, r_end, c_st, c_end = row_slice.start, row_slice.stop, col_slice.start, col_slice.stop
+		if r_st == None:
+			r_st = 0
+		if r_end == None:
+			r_end = self.dim[0]
+		if c_st == None:
+			c_st = 0
+		if c_end == None:
+			c_end = self.dim[1]
+
+		# apply the slice
+		new_matrix = Matrix(dim=(r_end - r_st, c_end - c_st))
+		for row_num in range(r_st, r_end):
+			for col_num in range(c_st, c_end):
+				new_matrix.data[row_num - r_st][col_num - c_st] = self.data[row_num][col_num]
+		return new_matrix
 
 	def __setitem__(self, key, value):
 		r"""
@@ -256,7 +273,32 @@ class Matrix:
 				 [4 5 1 2]
 				 [8 9 3 4]]
 		"""
-		pass
+		row_slice, col_slice = key
+		# single element
+		if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
+			self.data[row_slice][col_slice] = value
+			return
+		
+		# slice
+		# initialize the slice
+		r_st, r_end, c_st, c_end = row_slice.start, row_slice.stop, col_slice.start, col_slice.stop
+		if r_st == None:
+			r_st = 0
+		if r_end == None:
+			r_end = self.dim[0]
+		if c_st == None:
+			c_st = 0
+		if c_end == None:
+			c_end = self.dim[1]
+
+		# apply the slice
+		# new_matrix = Matrix(dim=(r_end - r_st, c_end - c_st))
+		for row_num in range(r_st, r_end):
+			for col_num in range(c_st, c_end):
+				self.data[row_num][col_num] = value.data[row_num - r_st][col_num - c_st]
+		return
+	
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	def __pow__(self, n):
 		r"""
@@ -523,8 +565,11 @@ if __name__ == "__main__":
 	pass
 
 
-m1 = Matrix([[1, 2, 3], [2, 3, 4]])
-print(m1.T())
+m1 = Matrix([[1, 2, 3], 
+			 [2, 3, 4]])
+m2 = Matrix([[6, 6]])
+m1[:1, :2] = m2
+print(m1.data)
 # m2 = Matrix([[1],
 # 			 [1],
 # 			 [1]])
