@@ -3,6 +3,7 @@
 
 import random
 
+
 class Matrix:
     r"""
     自定义的二维矩阵类
@@ -14,7 +15,7 @@ class Matrix:
              当参数 data 不为 None 时，忽略该参数。如果 data 和 dim 同时为 None, 应抛出异常。默认值: None
         init_value: 当提供的 data 参数为 None 时，使用该 init_value 初始化一个 n 行 m 列的矩阵，
                     即矩阵各元素均为 init_value. 当参数 data 不为 None 时，忽略该参数。 默认值: 0
-    
+
     Attributes:
         dim: 一个元组 (n, m) 表示矩阵的形状
         data: 一个二维的嵌套列表，表示矩阵的数据
@@ -30,14 +31,18 @@ class Matrix:
              [1 2]
              [2 3]]
     """
+
     def __init__(self, data=None, dim=None, init_value=0):
-        if data != None: # 输入data不为空的情况
+        if data != None:  # 输入data不为空的情况
             self.data = data
             self.dim = (len(data), len(data[0]))
-        elif dim == None: # data和dim全为空的情况
+        elif dim == None:  # data和dim全为空的情况
             raise ValueError("data和dim不能全为None")
-        else: # data为空，dim和init_value决定矩阵的情况
-            self.data = [[init_value for column_num in range(0, dim[1])] for row_num in range(0, dim[0])]
+        else:  # data为空，dim和init_value决定矩阵的情况
+            self.data = [
+                [init_value for column_num in range(0, dim[1])]
+                for row_num in range(0, dim[0])
+            ]
             self.dim = dim
 
     def shape(self):
@@ -50,18 +55,22 @@ class Matrix:
         r"""
         将矩阵从(m,n)维拉伸为newdim=(m1,n1)
         该函数不改变 self
-        
+
         Args:
             newdim: 一个元组 (m1, n1) 表示拉伸后的矩阵形状。如果 m1 * n1 不等于 self.dim[0] * self.dim[1],
                     应抛出异常
-        
+
         Returns:
             Matrix: 一个 Matrix 类型的返回结果, 表示 reshape 得到的结果
         """
-        if newdim[0]*newdim[1] != self.dim[0]*self.dim[1]:
+        if newdim[0] * newdim[1] != self.dim[0] * self.dim[1]:
             raise ValueError("拉伸前后元素数量不相等")
-        
-        single_row_matrix = [self.data[row_num][column_num] for row_num in range(0, self.dim[0]) for column_num in range(0, self.dim[1])] # 把原矩阵化为单层list
+
+        single_row_matrix = [
+            self.data[row_num][column_num]
+            for row_num in range(0, self.dim[0])
+            for column_num in range(0, self.dim[1])
+        ]  # 把原矩阵化为单层list
         new_matrix = []
         i = 0
         for row_num in range(0, newdim[0]):
@@ -78,24 +87,26 @@ class Matrix:
 
         Args:
             other: 参与运算的另一个 Matrix 实例
-        
+
         Returns:
             Matrix: 计算结果
-        
+
         Examples:
             >>> A = Matrix(data=[[1, 2], [3, 4]])
             >>> A.dot(A)
             >>> [[ 7 10]
                  [15 22]]
         """
-        if self.dim[1] != other.dim[0]: # 排除特殊情况
+        if self.dim[1] != other.dim[0]:  # 排除特殊情况
             raise ValueError("矩阵无法相乘")
 
         new_matrix = Matrix(None, (self.dim[0], other.dim[1]), 0)
         for n_row1 in range(0, self.dim[0]):
             for n_col2 in range(0, other.dim[1]):
                 for joint_i in range(0, self.dim[1]):
-                    new_matrix.data[n_row1][n_col2] += self.data[n_row1][joint_i] * other.data[joint_i][n_col2]
+                    new_matrix.data[n_row1][n_col2] += (
+                        self.data[n_row1][joint_i] * other.data[joint_i][n_col2]
+                    )
         return new_matrix.data
 
     def T(self):
@@ -116,10 +127,12 @@ class Matrix:
                  [2 5]
                  [3 6]]
         """
-        new_matrix = [[row[num_col] for row in self.data] for num_col in range(self.dim[1])]
+        new_matrix = [
+            [row[num_col] for row in self.data] for num_col in range(self.dim[1])
+        ]
         return new_matrix
 
-    def sum(self, axis=None): 
+    def sum(self, axis=None):
         r"""
         根据指定的坐标轴对矩阵元素进行求和
 
@@ -128,7 +141,7 @@ class Matrix:
                   axis = 0 表示对矩阵进行按列求和，得到形状为 (1, self.dim[1]) 的矩阵
                   axis = 1 表示对矩阵进行按行求和，得到形状为 (self.dim[0], 1) 的矩阵
                   axis = None 表示对矩阵全部元素进行求和，得到形状为 (1, 1) 的矩阵
-        
+
         Returns:
             Matrix: 一个 Matrix 类的实例，表示求和结果
 
@@ -144,17 +157,19 @@ class Matrix:
         """
         # sum all
         if axis == None:
-            list_of_element = [row[num_col] for row in self.data for num_col in range(self.dim[1])]
-            sum_matrix = [[sum(list_of_element)]] 
+            list_of_element = [
+                row[num_col] for row in self.data for num_col in range(self.dim[1])
+            ]
+            sum_matrix = [[sum(list_of_element)]]
         # sum by column(not finished, wait for the transpose)
         elif axis == 0:
             sum_matrix = [[]]
 
         # sum by row
         elif axis == 1:
-            sum_matrix = [[sum(row) for row in self.data] for num_col in range(self.dim[1])]
-            
-            
+            sum_matrix = [
+                [sum(row) for row in self.data] for num_col in range(self.dim[1])
+            ]
 
     def copy(self):
         r"""
@@ -176,9 +191,13 @@ class Matrix:
         Returns:
             Matrix: Kronecke product 的计算结果
         """
-        new_matrix = [[x*y for x in row1 for y in row2] for row1 in self.data for row2 in other.data]
+        new_matrix = [
+            [x * y for x in row1 for y in row2]
+            for row1 in self.data
+            for row2 in other.data
+        ]
         return new_matrix
-    
+
     def __getitem__(self, key):
         r"""
         实现 Matrix 的索引功能，即 Matrix 实例可以通过 [] 获取矩阵中的元素（或子矩阵）
@@ -214,15 +233,20 @@ class Matrix:
                  [4 5]
                  [8 9]]
         """
-        
+
         row_slice, col_slice = key
         # single element
         if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
             return self.data[row_slice][col_slice]
-        
+
         # slice
         # initialize the slice
-        r_st, r_end, c_st, c_end = row_slice.start, row_slice.stop, col_slice.start, col_slice.stop
+        r_st, r_end, c_st, c_end = (
+            row_slice.start,
+            row_slice.stop,
+            col_slice.start,
+            col_slice.stop,
+        )
         if r_st == None:
             r_st = 0
         if r_end == None:
@@ -236,7 +260,9 @@ class Matrix:
         new_matrix = Matrix(dim=(r_end - r_st, c_end - c_st))
         for row_num in range(r_st, r_end):
             for col_num in range(c_st, c_end):
-                new_matrix.data[row_num - r_st][col_num - c_st] = self.data[row_num][col_num]
+                new_matrix.data[row_num - r_st][col_num - c_st] = self.data[row_num][
+                    col_num
+                ]
         return new_matrix
 
     def __setitem__(self, key, value):
@@ -251,7 +277,7 @@ class Matrix:
             含义为, 将由 Matrix 实例 x 的第 a, a+1, ..., b-1 行, 第 c, c+1, ..., d-1 列元素构成的子矩阵 赋值为 value 矩阵
             即 子矩阵的 (i, j) 位置赋值为 value[i, j]
             同样地, 这里也需要支持如 x[:b, c:] = value, x[:, :] = value 等省略写法
-        
+
         Args:
             key: 一个元组，表示索引
             value: 赋值运算的右值，即要赋的值
@@ -278,10 +304,15 @@ class Matrix:
         if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
             self.data[row_slice][col_slice] = value
             return
-        
+
         # slice
         # initialize the slice
-        r_st, r_end, c_st, c_end = row_slice.start, row_slice.stop, col_slice.start, col_slice.stop
+        r_st, r_end, c_st, c_end = (
+            row_slice.start,
+            row_slice.stop,
+            col_slice.start,
+            col_slice.stop,
+        )
         if r_st == None:
             r_st = 0
         if r_end == None:
@@ -297,9 +328,8 @@ class Matrix:
             for col_num in range(c_st, c_end):
                 self.data[row_num][col_num] = value.data[row_num - r_st][col_num - c_st]
         return
-    
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __pow__(self, n):
         r"""
         矩阵的n次幂，n为自然数
@@ -311,11 +341,11 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        #需调用dot函数
-        #B=self
-        #for i in range(n-1):
-        #	B=Matirx.dot(self)
-        #return B
+        # 需调用dot函数
+        # B=self
+        # for i in range(n-1):
+        # 	B=Matirx.dot(self)
+        # return B
 
     def __add__(self, other):
         r"""
@@ -324,11 +354,11 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-        
+
         Returns:
             Matrix: 运算结果
         """
-        #与__mul__方法相同
+        # 与__mul__方法相同
 
     def __sub__(self, other):
         r"""
@@ -337,11 +367,11 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-        
+
         Returns:
             Matrix: 运算结果
         """
-        #与__mul__方法相同
+        # 与__mul__方法相同
 
     def __mul__(self, other):
         r"""
@@ -351,7 +381,7 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-        
+
         Returns:
             Matrix: 运算结果
 
@@ -359,13 +389,11 @@ class Matrix:
             >>> Matrix(data=[[1, 2]]) * Matrix(data=[[3, 4]])
             >>> [[3 8]]
         """
-        #lst=self.copy()
-        #for i in range(行数):
-        #	for j in range(列数):
-        #		lst[i][j]=self[i][j]*other[i][j]
-        #return lst
-        
-
+        # lst=self.copy()
+        # for i in range(行数):
+        # 	for j in range(列数):
+        # 		lst[i][j]=self[i][j]*other[i][j]
+        # return lst
 
     def __len__(self):
         r"""
@@ -374,10 +402,8 @@ class Matrix:
         Returns:
             int: 元素数目，即 行数 * 列数
         """
-        #self.dim!=None:return dim[0]*dim[1]
-        #self.dim==None:return len(Matrix)*len(Matrix[0])
-
-        
+        # self.dim!=None:return dim[0]*dim[1]
+        # self.dim==None:return len(Matrix)*len(Matrix[0])
 
     def __str__(self):
         r"""
@@ -388,26 +414,24 @@ class Matrix:
          的格式将矩阵表示为一个 字符串
          ！！！ 注意返回值是字符串
         """
-        #需调用T函数
-        #a=[0]*lie
-        #for i in range(n):
-        #	a[i]=max(A^T[i])
-        #for i in range(hang):
-        #	print("[")
-        #	for j in range(lie):
-        #		print(str(lst[i][j]).rjust(a[j]),end=" ")
-        #	print("]\n")
-        #再补上首尾方括号即可
+        # 需调用T函数
+        # a=[0]*lie
+        # for i in range(n):
+        # 	a[i]=max(A^T[i])
+        # for i in range(hang):
+        # 	print("[")
+        # 	for j in range(lie):
+        # 		print(str(lst[i][j]).rjust(a[j]),end=" ")
+        # 	print("]\n")
+        # 再补上首尾方括号即可
         pass
-
-
 
     def det(self):
         r"""
         计算方阵的行列式。对于非方阵的情形应抛出异常。
         要求: 该函数应不改变 self 的内容; 该函数的时间复杂度应该不超过 O(n**3).
         提示: Gauss消元
-        
+
         Returns:
             一个 Python int 或者 float, 表示计算结果
         """
@@ -445,8 +469,7 @@ class Matrix:
                         self.data[i]=hangjian(lst,self.data[i])
             num+=1
         return self.data"""
-            
-    
+
     def inverse(self):
         r"""
         计算非奇异方阵的逆矩阵。对于非方阵或奇异阵的情形应抛出异常。
@@ -456,46 +479,42 @@ class Matrix:
         Returns:
             Matrix: 一个 Matrix 实例，表示逆矩阵
         """
-        n=len(self.data)
-        lst=self.data.copy()
-        lst0=lst.copy()
-        storage=[[0 if i!=j else 1 for j in range(n)] for i in range(n)]
+        n = len(self.data)
+        lst = self.data.copy()
+        lst0 = lst.copy()
+        storage = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
         for i in range(n):
             lst[i].extend(storage[i])
 
-        def hangcheng(lst,k):
+        def hangcheng(lst, k):
             for i in range(len(lst)):
-                lst[i]*=k
+                lst[i] *= k
             return lst
 
-        def hangjian(lst1,lst2):#lst2-lst1
+        def hangjian(lst1, lst2):  # lst2-lst1
             for i in range(len(lst1)):
-                lst2[i]-=lst1[i]
+                lst2[i] -= lst1[i]
             return lst2
-        num=0
-        while num<n+1:
+
+        num = 0
+        while num < n + 1:
             for t in range(n):
-                if self.data[0][t]==0:
-                    lt=self.data[0].copy()
-                    for i in range(1,n):
-                        if self.data[i][t]!=0:
-                            lst[0]=self.data[i]
-                            lst0[0]=self.data[i]
-                            lst[i]=lt
-                            lst0[i]=lt
+                if self.data[0][t] == 0:
+                    lt = self.data[0].copy()
+                    for i in range(1, n):
+                        if self.data[i][t] != 0:
+                            lst[0] = self.data[i]
+                            lst0[0] = self.data[i]
+                            lst[i] = lt
+                            lst0[i] = lt
                         break
-                for i in range(num+1,n) and range(0,num):
-                    if lst[i][t]!=0:
-                        k=lst[i][t]/lst[num][t]
-                        help_lst=hangcheng(lst[num],k)
-                        lst[i]=hangjian(help_lst,lst[i])
-            num+=1
+                for i in range(num + 1, n) and range(0, num):
+                    if lst[i][t] != 0:
+                        k = lst[i][t] / lst[num][t]
+                        help_lst = hangcheng(lst[num], k)
+                        lst[i] = hangjian(help_lst, lst[i])
+            num += 1
         return lst
-
-
-
-        
-        
 
     def rank(self):
         r"""
@@ -506,7 +525,7 @@ class Matrix:
         Returns:
             一个 Python int 表示计算结果
         """
-        #if hang<lie:
+        # if hang<lie:
         """	
         def hangcheng(lst,k):
             for i in range(len(lst)):
@@ -544,21 +563,21 @@ class Matrix:
         while new_lst[r].count(0)!=lie:
             r+=1
         return r"""
-        #if hang>lie:
-        #self取转置重新讨论即可
-            
+        # if hang>lie:
+        # self取转置重新讨论即可
 
 
 def I(n):
-    '''
+    """
     return an n*n unit matrix
-    '''
-    return [[0 if i!=j else 1 for j in range(n)] for i in range(n)]
+    """
+    return [[0 if i != j else 1 for j in range(n)] for i in range(n)]
 
-def narray(dim, init_value=1): # dim (,,,,,), init为矩阵元素初始值
+
+def narray(dim, init_value=1):  # dim (,,,,,), init为矩阵元素初始值
     r"""
     返回一个matrix，维数为dim，初始值为init_value
-    
+
     Args:
         dim: Tuple[int, int] 表示矩阵形状
         init_value: 表示初始值，默认值: 1
@@ -567,7 +586,6 @@ def narray(dim, init_value=1): # dim (,,,,,), init为矩阵元素初始值
         Matrix: 一个 Matrix 类型的实例
     """
 
-
     Matrix = []
     if dim[0] == 0 or dim[1] == 0:
         return None
@@ -575,7 +593,8 @@ def narray(dim, init_value=1): # dim (,,,,,), init为矩阵元素初始值
         for i in range(dim[0]):
             Matrix.append([init_value] * dim[1])
         return Matrix  # 返回一个matrix,维数为dim,初始值为init_value
-    #return Matrix(dim, None, init_value)
+    # return Matrix(dim, None, init_value)
+
 
 def arange(start, end, step):
     r"""
@@ -589,10 +608,11 @@ def arange(start, end, step):
     Returns:
         Matrix: 一个 Matrix 实例
     """
-    Narray=[]
-    for i in range(start,end,step):
+    Narray = []
+    for i in range(start, end, step):
         Narray.append(i)
-    return(Narray)                               #返回一个1*n 的 narray 其中的元素类同 range(start, end, step)
+    return Narray  # 返回一个1*n 的 narray 其中的元素类同 range(start, end, step)
+
 
 def zeros(dim):
     r"""
@@ -604,7 +624,8 @@ def zeros(dim):
     Returns:
         Matrix: 一个 Matrix 类型的实例
     """
-    return(narray(dim,0))                        #返回一个维数为dim 的全0 narray
+    return narray(dim, 0)  # 返回一个维数为dim 的全0 narray
+
 
 def zeros_like(matrix):
     r"""
@@ -612,7 +633,7 @@ def zeros_like(matrix):
 
     Args:
         matrix: 一个 Matrix 实例
-    
+
     Returns:
         Matrix: 一个 Matrix 类型的实例
 
@@ -622,51 +643,56 @@ def zeros_like(matrix):
         >>> [[0 0 0]
              [0 0 0]]
     """
-    if matrix==None:
-        return(None)
+    if matrix == None:
+        return None
     else:
-        m=len(matrix)
-        n=len(matrix[0])
-        return(zeros([m,n]))                     #返回一个形状和matrix一样 的全0 narray
+        m = len(matrix)
+        n = len(matrix[0])
+        return zeros([m, n])  # 返回一个形状和matrix一样 的全0 narray
+
 
 def ones(dim):
     r"""
     返回一个维数为dim 的全1 narray
     类同 zeros
     """
-    return(narray(dim,1))                        #返回一个维数为dim 的全1 narray
+    return narray(dim, 1)  # 返回一个维数为dim 的全1 narray
+
 
 def ones_like(matrix):
     r"""
     返回一个维数和matrix一样 的全1 narray
     类同 zeros_like
     """
-    if matrix==None:
-        return(None)
+    if matrix == None:
+        return None
     else:
-        m=len(matrix)
-        n=len(matrix[0])
-        return(ones([m,n]))                      #返回一个维数和matrix一样 的全1 narray
+        m = len(matrix)
+        n = len(matrix[0])
+        return ones([m, n])  # 返回一个维数和matrix一样 的全1 narray
+
 
 def nrandom(dim):
     r"""
     返回一个维数为dim 的随机 narray
     参数与返回值类型同 zeros
     """
-    a=random.random()
-    return(narray(dim,a))
+    a = random.random()
+    return narray(dim, a)
+
 
 def nrandom_like(matrix):
     r"""
     返回一个维数和matrix一样 的随机 narray
     参数与返回值类型同 zeros_like
     """
-    if matrix==None:
-        return(None)
+    if matrix == None:
+        return None
     else:
-        m=len(matrix)
-        n=len(matrix[0])
-        return(nrandom([m,n]))                    #返回一个维数为dim 的随机 narray
+        m = len(matrix)
+        n = len(matrix[0])
+        return nrandom([m, n])  # 返回一个维数为dim 的随机 narray
+
 
 def concatenate(items, axis=0):
     r"""
@@ -679,7 +705,7 @@ def concatenate(items, axis=0):
         axis: 一个取值为 0 或 1 的整数，表示拼接方向，默认值 0.
               0 表示在第0维即行上进行拼接
               1 表示在第1维即列上进行拼接
-    
+
     Returns:
         Matrix: 一个 Matrix 类型的拼接结果
 
@@ -691,60 +717,62 @@ def concatenate(items, axis=0):
         >>> concatenate((A, B, A), axis=1)
         >>> [[0 1 2 3 4 5 0 1 2]]
     """
-    def concatenate_0(A,B):
-        if A==None and B==None:
-            return(None)
-        elif not (A==None or B==None):
-            if len(A[0])==len(B[0]):
-                return(A+B)
+
+    def concatenate_0(A, B):
+        if A == None and B == None:
+            return None
+        elif not (A == None or B == None):
+            if len(A[0]) == len(B[0]):
+                return A + B
             else:
-                return('error')
+                return "error"
         else:
-            return('error')                      #axis=0时,两矩阵列数不变拼接
-        
-    def concatenate_1(A,B):
-        if A==None and B==None:
-            return(None)
-        elif not (A==None or B==None):
-            if len(A)==len(B):
-                answer=[]
+            return "error"  # axis=0时,两矩阵列数不变拼接
+
+    def concatenate_1(A, B):
+        if A == None and B == None:
+            return None
+        elif not (A == None or B == None):
+            if len(A) == len(B):
+                answer = []
                 for i in range(len(A)):
-                    answer.append(A[i]+B[i])
-                return(answer)
+                    answer.append(A[i] + B[i])
+                return answer
             else:
-                return('error')
+                return "error"
         else:
-            return('error')                       #axis=1时,两矩阵行数不变拼接
-        
-    answer=items[0]
-    if axis==0:
-        for i in range(1,len(items)):
-            if concatenate_0(answer,items[i])=='error':
-                return('error')
+            return "error"  # axis=1时,两矩阵行数不变拼接
+
+    answer = items[0]
+    if axis == 0:
+        for i in range(1, len(items)):
+            if concatenate_0(answer, items[i]) == "error":
+                return "error"
             else:
-                answer=concatenate_0(answer,items[i])
-        return(answer)                           #axis=0时,多矩阵列数不变拼接
-    elif axis==1:
-        for i in range(1,len(items)):
-            if concatenate_1(answer,items[i])=='error':
-                return('error')
+                answer = concatenate_0(answer, items[i])
+        return answer  # axis=0时,多矩阵列数不变拼接
+    elif axis == 1:
+        for i in range(1, len(items)):
+            if concatenate_1(answer, items[i]) == "error":
+                return "error"
             else:
-                answer=concatenate_1(answer,items[i])
-        return(answer)                           #axis=1时,多矩阵行数不变拼接
+                answer = concatenate_1(answer, items[i])
+        return answer  # axis=1时,多矩阵行数不变拼接
     else:
-        return('error')
+        return "error"
+
 
 def vectorize(func):
     r"""
     将给定函数进行向量化
-    
+
     Args:
         func: 一个Python函数
-    
+
     Returns:
         一个向量化的函数 F: Matrix -> Matrix, 它的参数是一个 Matrix 实例 x, 返回值也是一个 Matrix 实例；
         它将函数 func 作用在 参数 x 的每一个元素上
-    
+
     Examples:
         >>> def func(x):
                 return x ** 2
@@ -753,7 +781,7 @@ def vectorize(func):
         >>> F(x)
         >>> [[1 4 9]
              [4 9 1]]
-        >>> 
+        >>>
         >>> @vectorize
         >>> def my_abs(x):
                 if x < 0:
@@ -765,20 +793,22 @@ def vectorize(func):
         >>> [[1, 1]
              [2, 2]]
     """
+
     def F(x):
-        if x==None:
-            return(None)
+        if x == None:
+            return None
         else:
-            answer=[]
-            m=len(x)
-            n=len(x[0])
+            answer = []
+            m = len(x)
+            n = len(x[0])
             for i in range(m):
-                list1=[]
+                list1 = []
                 for j in range(n):
                     list1.append(func(x[i][j]))
-                answer.append(list1)            #对列表中每一个元素进行func运算
-        return(answer)
-    return(F)
+                answer.append(list1)  # 对列表中每一个元素进行func运算
+        return answer
+
+    return F
 
 
 if __name__ == "__main__":
@@ -786,8 +816,7 @@ if __name__ == "__main__":
     pass
 
 
-m1 = Matrix([[1, 2, 3], 
-             [2, 3, 4]])
+m1 = Matrix([[1, 2, 3], [2, 3, 4]])
 m2 = Matrix([[6, 6]])
 m1[:1, :2] = m2
 print(m1.data)
