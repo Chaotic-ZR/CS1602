@@ -1,5 +1,5 @@
 # CS1602
-计算导论作业（+离散数学cdcl实现）
+计算导论作业
 
 Homework of CS1602
 
@@ -9,7 +9,7 @@ Homework of CS1602
 
 ## 小组作业
 
-实现numpy的矩阵运算功能
+实现numpy的矩阵部分功能
 
 ## 离散数学CDCL实现
 
