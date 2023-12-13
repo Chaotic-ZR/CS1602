@@ -11,7 +11,6 @@ Homework of CS1602
 
 实现numpy的矩阵部分功能
 
-## 离散数学CDCL实现
 
 
 
