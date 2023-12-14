@@ -72,14 +72,17 @@ class Matrix:
             self.data[row_num][col_num]
             for row_num in range(0, self.dim[0])
             for col_num in range(0, self.dim[1])
-        ]   # 把原矩阵化为单层list
+        ]  # 把原矩阵化为单层list
 
         # 创建新矩阵
         reshaped_matrix_data = [
-            [original_data[row_num*newdim[1] + col_num] for col_num in range(newdim[1])]
+            [
+                original_data[row_num * newdim[1] + col_num]
+                for col_num in range(newdim[1])
+            ]
             for row_num in range(newdim[0])
         ]
-        reshaped_matrix = Matrix(data = reshaped_matrix_data)
+        reshaped_matrix = Matrix(data=reshaped_matrix_data)
         return reshaped_matrix
 
     def dot(self, other):
@@ -102,14 +105,17 @@ class Matrix:
         if self.dim[1] != other.dim[0]:  # 排除特殊情况
             raise ValueError("矩阵无法相乘")
 
-        new_matrix = Matrix(None, (self.dim[0], other.dim[1]), 0)
-        for n_row1 in range(0, self.dim[0]):
-            for n_col2 in range(0, other.dim[1]):
-                for joint_i in range(0, self.dim[1]):
-                    new_matrix.data[n_row1][n_col2] += (
-                        self.data[n_row1][joint_i] * other.data[joint_i][n_col2]
-                    )
-        return new_matrix.data
+        new_dim = (self.dim[0], other.dim[1])
+
+        dot_product = [
+            [
+                sum(self.data[i][k] * other.data[k][j] for k in range(self.dim[1]))
+                for j in range(new_dim[1])
+            ]
+            for i in range(new_dim[0])
+        ]
+        dot_matrix = Matrix(data=dot_product)
+        return dot_matrix
 
     def T(self):
         r"""
@@ -129,10 +135,11 @@ class Matrix:
                  [2 5]
                  [3 6]]
         """
-        new_matrix = [
+        trans_data = [
             [row[num_col] for row in self.data] for num_col in range(self.dim[1])
         ]
-        return new_matrix
+        trans_matrix = Matrix(data=trans_data)
+        return trans_matrix
 
     def sum(self, axis=None):
         r"""
@@ -160,18 +167,24 @@ class Matrix:
         # sum all
         if axis == None:
             list_of_element = [
-                row[num_col] for row in self.data for num_col in range(self.dim[1])
+                row[col_num] for row in self.data for col_num in range(self.dim[1])
             ]
-            sum_matrix = [[sum(list_of_element)]]
+            sum_data = [[sum(list_of_element)]]
+
         # sum by column(not finished, wait for the transpose)
         elif axis == 0:
-            sum_matrix = [[]]
+            trans_matrix = self.T()
+            sum_data = [[sum(row) for row in trans_matrix.data]]
 
         # sum by row
         elif axis == 1:
-            sum_matrix = [
-                [sum(row) for row in self.data] for num_col in range(self.dim[1])
-            ]
+            sum_data = [[sum(row)] for row in self.data]
+
+        # raise error with other axis values
+        else:
+            raise ValueError("axis输入错误")
+
+        return Matrix(data=sum_data)
 
     def copy(self):
         r"""
@@ -180,12 +193,11 @@ class Matrix:
         Returns:
             Matrix: 一个self的备份
         """
-        new_matrix = Matrix(data=self.data)
-        return new_matrix
+        return Matrix(data=self.data)
 
     def Kronecker_product(self, other):
         r"""
-        计算两个矩阵的Kronecker积，具体定义可以搜索，https://baike.baidu.com/item/克罗内克积/6282573
+        计算两个矩阵的Kronecker积
 
         Args:
             other: 参与运算的另一个 Matrix
@@ -193,12 +205,12 @@ class Matrix:
         Returns:
             Matrix: Kronecke product 的计算结果
         """
-        new_matrix = [
+        kp_data = [
             [x * y for x in row1 for y in row2]
             for row1 in self.data
             for row2 in other.data
         ]
-        return new_matrix
+        return Matrix(data=kp_data)
 
     def __getitem__(self, key):
         r"""
@@ -237,6 +249,7 @@ class Matrix:
         """
 
         row_slice, col_slice = key
+
         # single element
         if not isinstance(row_slice, slice) and not isinstance(col_slice, slice):
             return self.data[row_slice][col_slice]
@@ -259,13 +272,11 @@ class Matrix:
             c_end = self.dim[1]
 
         # apply the slice
-        new_matrix = Matrix(dim=(r_end - r_st, c_end - c_st))
-        for row_num in range(r_st, r_end):
-            for col_num in range(c_st, c_end):
-                new_matrix.data[row_num - r_st][col_num - c_st] = self.data[row_num][
-                    col_num
-                ]
-        return new_matrix
+        sliced_data = [
+            [self.data[row_num][col_num] for col_num in range(c_st, c_end)]
+            for row_num in range(r_st, r_end)
+        ]
+        return Matrix(data=sliced_data)
 
     def __setitem__(self, key, value):
         r"""
@@ -455,7 +466,7 @@ class Matrix:
         Returns:
             一个 Python int 或者 float, 表示计算结果
         """
-        #
+        # 加入报错内容
         lst = self.data.copy()
         n = len(lst)
 
@@ -837,13 +848,24 @@ if __name__ == "__main__":
     pass
 
 
-m1 = Matrix([[1, 2, 3], [2, 3, 4]])
-m2 = Matrix([[6, 6]])
-reshaped_matrix = m1.reshape((3, 2))
-print(reshaped_matrix.data)
-# m1[:1, :2] = m2
-# print(m1.data)
-# m2 = Matrix([[1],
-# 			 [1],
-# 			 [1]])
-# print(m1.dot(m2).data)
+# # Kronecker_product test
+# m1 = Matrix(data=[[1, 2], [3, 4]])
+# m2 = Matrix(data=[[5, 6], [7, 8]])
+
+# kp = m1.Kronecker_product(m2)
+# print(kp.data)
+
+# get_item test
+# x = Matrix(data=[
+#                 [0, 1, 2, 3],
+#                 [4, 5, 6, 7],
+#                 [8, 9, 0, 1]
+#                     ])
+# y = x[:, :2]
+# print(y.data)
+
+# set_item test
+x = Matrix(data=[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 0, 1]])
+
+x[1:, 2:] = Matrix(data=[[1, 2], [3, 4]])
+print(x.data)
