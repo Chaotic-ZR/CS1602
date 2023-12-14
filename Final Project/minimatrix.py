@@ -329,7 +329,7 @@ class Matrix:
                 self.data[row_num][col_num] = value.data[row_num - r_st][col_num - c_st]
         return
 
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~the second part~~~~~~~~~~~~~~~~~~~~~~~
     def __pow__(self, n):
         r"""
         矩阵的n次幂，n为自然数
@@ -341,11 +341,11 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        # 需调用dot函数
-        # B=self
-        # for i in range(n-1):
-        # 	B=Matirx.dot(self)
-        # return B
+        #需调用dot函数
+        B=self
+        for i in range(n-1):
+            B=Matrix.dot(self)
+        return B
 
     def __add__(self, other):
         r"""
@@ -354,11 +354,17 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-
+        
         Returns:
             Matrix: 运算结果
         """
-        # 与__mul__方法相同
+        #与__mul__方法相同
+        B=self.data
+        for i in range(len(self.data)):
+            for j in range(len(self.data[0])):
+                B[i][j]+=other.data[i][j]
+        B=Matrix(data=B)
+        return B
 
     def __sub__(self, other):
         r"""
@@ -367,11 +373,17 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-
+        
         Returns:
             Matrix: 运算结果
         """
-        # 与__mul__方法相同
+        B=self.data
+        for i in range(len(self.data)):
+            for j in range(len(self.data[0])):
+                B[i][j]-=other.data[i][j]
+        B=Matrix(data=B)
+        return B
+        
 
     def __mul__(self, other):
         r"""
@@ -381,7 +393,7 @@ class Matrix:
 
         Args:
             other: 一个 Matrix 实例
-
+        
         Returns:
             Matrix: 运算结果
 
@@ -389,11 +401,15 @@ class Matrix:
             >>> Matrix(data=[[1, 2]]) * Matrix(data=[[3, 4]])
             >>> [[3 8]]
         """
-        # lst=self.copy()
-        # for i in range(行数):
-        # 	for j in range(列数):
-        # 		lst[i][j]=self[i][j]*other[i][j]
-        # return lst
+        hang=len(self.data)
+        lie=len(self.data[0])
+        lst=self.copy()
+        for i in range(hang):
+            for j in range(lie):
+                lst[i][j]=self[i][j]*other[i][j]
+        return lst
+        
+
 
     def __len__(self):
         r"""
@@ -402,74 +418,86 @@ class Matrix:
         Returns:
             int: 元素数目，即 行数 * 列数
         """
-        # self.dim!=None:return dim[0]*dim[1]
-        # self.dim==None:return len(Matrix)*len(Matrix[0])
+        if self.dim!=None:
+            return self.dim[0]*self.dim[1]
+        else:
+            return len(Matrix)*len(Matrix[0])
+
+        
 
     def __str__(self):
         r"""
         按照
         [[  0   1   4   9  16  25  36  49]
-          [ 64  81 100 121 144 169 196 225]
-          [256 289 324 361 400 441 484 529]]
+         [ 64  81 100 121 144 169 196 225]
+         [256 289 324 361 400 441 484 529]]
          的格式将矩阵表示为一个 字符串
          ！！！ 注意返回值是字符串
         """
-        # 需调用T函数
-        # a=[0]*lie
-        # for i in range(n):
-        # 	a[i]=max(A^T[i])
-        # for i in range(hang):
-        # 	print("[")
-        # 	for j in range(lie):
-        # 		print(str(lst[i][j]).rjust(a[j]),end=" ")
-        # 	print("]\n")
-        # 再补上首尾方括号即可
-        pass
+        #需调用T函数
+        hang,lie=len(self.data),len(self.data[0])
+        B=Matrix.T(self)
+        lst0=B.data
+        lst=self.data.copy()
+        a=[0]*lie
+        print("[[")
+        for i in range(lie):
+            a[i]=max(len(str(lst0[i])))
+            for j in range(hang-1):
+                print(str(lst[j][i].rjust(a[i],end="")))
+            print("]\n [")
+            print(str(lst[hang-1][i].rjust(a[i],end="")))
+            print("]]")
+
+        
+
+
 
     def det(self):
         r"""
         计算方阵的行列式。对于非方阵的情形应抛出异常。
         要求: 该函数应不改变 self 的内容; 该函数的时间复杂度应该不超过 O(n**3).
         提示: Gauss消元
-
+        
         Returns:
             一个 Python int 或者 float, 表示计算结果
         """
         #
-        """def hangcheng(lst,k):
+        lst=self.data.copy()
+        n=len(lst)
+        def hangcheng(lst,k):
+            lt=lst.copy()
             for i in range(len(lst)):
-                lst[i]*=k
-            return lst
+                lt[i]=k*lt[i]
+            return lt
         def hangjian(lst1,lst2):#lst2-lst1
             for i in range(len(lst1)):
-                lst2[i]-=lst1[i]
+                lst2[i]=lst2[i]-lst1[i]
             return lst2
-        def judge(self.data):
-            for i in range(hang):
-                for j in range(i+1:lie):
-                    if self.data[i][j]!=0:
-                        return False
-            return True    
-        num=0
-        while not judge(self.data):
-            for n in range(len(self.data)):
-                if self.data[num][n]==0:
-                    t=self.data[num].copy()
-                    for i in range(num+1,hang):
-                        if self.data[i][n]!=0:
-                            self.data[num]=self.data[i]
-                            self.data[i]=lt
-                        break                               #将首个首项非零的一行置顶
+        numi=0
+        numj=0
+        while numi<=n-1:
+            if lst[numi][numj]==0:
+                for i in range(numi+1,n):
+                    if lst[i][numj]!=0:
+                        lst0=lst[numi].copy()
+                        lst[numi]=lst[i]
+                        lst[i]=lst0
+                        break
+            for i in range(numi+1,n):
+                if lst[i][numj]!=0:
+                    k=lst[i][numj]/lst[numi][numj]                                       
+                    lt=hangcheng(lst[numi],k)
+                    lst[i]=hangjian(lt,lst[i])        
+            numi+=1
+            numj+=1
+        ji=1
+        for i in range(n):
+            ji*=lst[i][i]
+        return ji
 
-
-                for i in range(num+1,hang):
-                    if self.data[i][n]!=0:
-                        k=self.data[i][n]/self.data[num][n]
-                        lst=hangcheng(self.data[num],k)
-                        self.data[i]=hangjian(lst,self.data[i])
-            num+=1
-        return self.data"""
-
+            
+    
     def inverse(self):
         r"""
         计算非奇异方阵的逆矩阵。对于非方阵或奇异阵的情形应抛出异常。
@@ -479,42 +507,53 @@ class Matrix:
         Returns:
             Matrix: 一个 Matrix 实例，表示逆矩阵
         """
-        n = len(self.data)
-        lst = self.data.copy()
-        lst0 = lst.copy()
-        storage = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+        n=len(self.data)
+        lst=self.data.copy()
+        storage=[[0 if i!=j else 1 for j in range(n)] for i in range(n)]
         for i in range(n):
-            lst[i].extend(storage[i])
-
-        def hangcheng(lst, k):
+            lst[i].extend(storage[i])   #合并矩阵与单位矩阵
+        def hangcheng(lst,k):
+            lt=lst.copy()
             for i in range(len(lst)):
-                lst[i] *= k
-            return lst
-
-        def hangjian(lst1, lst2):  # lst2-lst1
+                lt[i]*=k
+            return lt
+        def hangjian(lst1,lst2):#lst2-lst1
             for i in range(len(lst1)):
-                lst2[i] -= lst1[i]
-            return lst2
-
-        num = 0
-        while num < n + 1:
-            for t in range(n):
-                if self.data[0][t] == 0:
-                    lt = self.data[0].copy()
-                    for i in range(1, n):
-                        if self.data[i][t] != 0:
-                            lst[0] = self.data[i]
-                            lst0[0] = self.data[i]
-                            lst[i] = lt
-                            lst0[i] = lt
-                        break
-                for i in range(num + 1, n) and range(0, num):
-                    if lst[i][t] != 0:
-                        k = lst[i][t] / lst[num][t]
-                        help_lst = hangcheng(lst[num], k)
-                        lst[i] = hangjian(help_lst, lst[i])
-            num += 1
+                lst2[i]-=lst1[i]
+            return lst2                 #辅助函数的定义
+        numi,numj=0,0
+        while numi<n:
+            if lst[numi][numj]==0:
+                for i in range(numi+1,n):
+                    if lst[i][numj]!=0:
+                        lst0=lst[numi].copy()
+                        lst[numi]=lst[i]
+                        lst[i]=lst0
+                        break           #将首个对应位置非零行的置顶
+            for i in range(numi):
+                if lst[i][numj]!=0:
+                    k=lst[i][numj]/lst[numi][numj]
+                    lt=hangcheng(lst[numi],k)
+                    lst[i]=hangjian(lt,lst[i])
+            for i in range(numi+1,n):
+                if lst[i][numj]!=0:
+                    k=lst[i][numj]/lst[numi][numj]
+                    lt=hangcheng(lst[numi],k)
+                    lst[i]=hangjian(lt,lst[i])
+            numi+=1
+            numj+=1
+        for i in range(len(lst)):
+            if lst[i][i]!=1:
+                k=1/lst[i][i]
+                lst[i]=hangcheng(lst[i],k)
         return lst
+
+
+
+
+
+        
+        
 
     def rank(self):
         r"""
@@ -525,55 +564,53 @@ class Matrix:
         Returns:
             一个 Python int 表示计算结果
         """
-        # if hang<lie:
-        """	
+        #注：默认行数大于等于列数
+        hang,lie=len(self.data),len(self.data[0])
         def hangcheng(lst,k):
+            lt=lst.copy()
             for i in range(len(lst)):
-                lst[i]*=k
-            return lst
+                lt[i]*=k
+            return lt
         def hangjian(lst1,lst2):#lst2-lst1
             for i in range(len(lst1)):
                 lst2[i]-=lst1[i]
             return lst2
-        def judge(self.data):
-            for i in range(hang):
-                for j in range(i+1:lie):
-                    if self.data[i][j]!=0:
-                         return False
-            return True    
-        num=0
-        while not judge(self.data):
-            for n in range(len(self.data)):
-            if self.data[num][n]==0:
-                t=self.data[num].copy()
-                   for i in range(num+1,hang):
-                    if self.data[i][n]!=0:
-                        self.data[num]=self.data[i]
-                        self.data[i]=lt
-                    break                               #将首个首项非零的一行置顶
-
-            for i in range(num+1,hang):
-                if self.data[i][n]!=0:
-                    k=self.data[i][n]/self.data[num][n]
-                    lst=hangcheng(self.data[n],k)
-                    self.data[i]=hangjian(lst,self.data[n])
-            num+=1
-        new_lst=self.data
+        lst=self.data.copy()
+        numi=0
+        numj=0
+        while numi<=hang-1:
+            if lst[numi][numj]==0:
+                for i in range(numi+1,hang):
+                    if lst[i][numj]!=0:
+                        lst0=lst[numi].copy()
+                        lst[numi]=lst[i]
+                        lst[i]=lst0
+                        break
+            for i in range(numi+1,hang):
+                if lst[i][numj]!=0:
+                    k=lst[i][numj]/lst[numi][numj]                                       
+                    lt=hangcheng(lst[numi],k)
+                    lst[i]=hangjian(lt,lst[i])
+            numi+=1  
+            numj+=1
         r=0
-        while new_lst[r].count(0)!=lie:
-            r+=1
-        return r"""
-        # if hang>lie:
-        # self取转置重新讨论即可
+        for row in range(len(lst)):
+            if lst[row].count(0)!=lie:
+                r+=1
+        return r
+
+        #if hang>lie:
+        #self取转置重新讨论即可
+            
 
 
 def I(n):
-    """
+    '''
     return an n*n unit matrix
-    """
-    return [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+    '''
+    return [[0 if i!=j else 1 for j in range(n)] for i in range(n)]
 
-
+# ~~~~~~~~~~~~~~the third part~~~~~~~~~~~~~~~ 
 def narray(dim, init_value=1):  # dim (,,,,,), init为矩阵元素初始值
     r"""
     返回一个matrix，维数为dim，初始值为init_value
@@ -585,15 +622,13 @@ def narray(dim, init_value=1):  # dim (,,,,,), init为矩阵元素初始值
     Returns:
         Matrix: 一个 Matrix 类型的实例
     """
-
-    Matrix = []
-    if dim[0] == 0 or dim[1] == 0:
-        return None
+    list1=[]
+    if dim[0]==0 or dim[1]==0:
+        return(Matrix(None,None,1))
     else:
         for i in range(dim[0]):
-            Matrix.append([init_value] * dim[1])
-        return Matrix  # 返回一个matrix,维数为dim,初始值为init_value
-    # return Matrix(dim, None, init_value)
+            list1.append([init_value]*dim[1])
+        return(Matrix(list1))                           #返回一个matrix,维数为dim,初始值为init_value
 
 
 def arange(start, end, step):
@@ -608,10 +643,10 @@ def arange(start, end, step):
     Returns:
         Matrix: 一个 Matrix 实例
     """
-    Narray = []
-    for i in range(start, end, step):
-        Narray.append(i)
-    return Narray  # 返回一个1*n 的 narray 其中的元素类同 range(start, end, step)
+    list1=[]
+    for i in range(start,end,step):
+        list1.append(i)
+    return(Matrix([list1]))                               #返回一个1*n 的 narray 其中的元素类同 range(start, end, step)
 
 
 def zeros(dim):
@@ -643,12 +678,10 @@ def zeros_like(matrix):
         >>> [[0 0 0]
              [0 0 0]]
     """
-    if matrix == None:
-        return None
+    if matrix.data==None:
+        return(None)
     else:
-        m = len(matrix)
-        n = len(matrix[0])
-        return zeros([m, n])  # 返回一个形状和matrix一样 的全0 narray
+        return(zeros(matrix.dim))                     #返回一个形状和matrix一样 的全0 narray
 
 
 def ones(dim):
@@ -656,7 +689,7 @@ def ones(dim):
     返回一个维数为dim 的全1 narray
     类同 zeros
     """
-    return narray(dim, 1)  # 返回一个维数为dim 的全1 narray
+    return(narray(dim,1))                        #返回一个维数为dim 的全1 narray
 
 
 def ones_like(matrix):
@@ -664,12 +697,10 @@ def ones_like(matrix):
     返回一个维数和matrix一样 的全1 narray
     类同 zeros_like
     """
-    if matrix == None:
-        return None
+    if matrix.data==None:
+        return(None)
     else:
-        m = len(matrix)
-        n = len(matrix[0])
-        return ones([m, n])  # 返回一个维数和matrix一样 的全1 narray
+        return(ones(matrix.dim))                      #返回一个维数和matrix一样 的全1 narray
 
 
 def nrandom(dim):
@@ -677,8 +708,8 @@ def nrandom(dim):
     返回一个维数为dim 的随机 narray
     参数与返回值类型同 zeros
     """
-    a = random.random()
-    return narray(dim, a)
+    a=random.random()
+    return(narray(dim,a))                             #返回一个维数为dim 的随机 narray
 
 
 def nrandom_like(matrix):
@@ -686,12 +717,10 @@ def nrandom_like(matrix):
     返回一个维数和matrix一样 的随机 narray
     参数与返回值类型同 zeros_like
     """
-    if matrix == None:
-        return None
+    if matrix.data==None:
+        return(None)
     else:
-        m = len(matrix)
-        n = len(matrix[0])
-        return nrandom([m, n])  # 返回一个维数为dim 的随机 narray
+        return(nrandom(matrix.dim))                    #返回一个维数和matrix一样 的随机 narray
 
 
 def concatenate(items, axis=0):
@@ -717,49 +746,48 @@ def concatenate(items, axis=0):
         >>> concatenate((A, B, A), axis=1)
         >>> [[0 1 2 3 4 5 0 1 2]]
     """
-
-    def concatenate_0(A, B):
-        if A == None and B == None:
-            return None
-        elif not (A == None or B == None):
-            if len(A[0]) == len(B[0]):
-                return A + B
+    def concatenate_0(A,B):
+        if A.data==None and B.data==None:
+            return(Matrix(None))
+        elif not (A.data==None or B.data==None):
+            if len(A.data[0])==len(B.data[0]):
+                return(Matrix(A.data+B.data))
             else:
-                return "error"
+                return('error')
         else:
-            return "error"  # axis=0时,两矩阵列数不变拼接
-
-    def concatenate_1(A, B):
-        if A == None and B == None:
-            return None
-        elif not (A == None or B == None):
-            if len(A) == len(B):
-                answer = []
-                for i in range(len(A)):
-                    answer.append(A[i] + B[i])
-                return answer
+            return('error')                      #axis=0时,两矩阵列数不变拼接
+        
+    def concatenate_1(A,B):
+        if A.data==None and B.data==None:
+            return(Matrix(None))
+        elif not (A.data==None or B.data==None):
+            if len(A.data)==len(B.data):
+                answer=[]
+                for i in range(len(A.data)):
+                    answer.append(A.data[i]+B.data[i])
+                return(Matrix(answer))
             else:
-                return "error"
+                return('error')
         else:
-            return "error"  # axis=1时,两矩阵行数不变拼接
-
-    answer = items[0]
-    if axis == 0:
-        for i in range(1, len(items)):
-            if concatenate_0(answer, items[i]) == "error":
-                return "error"
+            return('error')                       #axis=1时,两矩阵行数不变拼接
+        
+    answer=items[0]
+    if axis==0:
+        for i in range(1,len(items)):
+            if concatenate_0(answer,items[i])=='error':
+                return('error')
             else:
-                answer = concatenate_0(answer, items[i])
-        return answer  # axis=0时,多矩阵列数不变拼接
-    elif axis == 1:
-        for i in range(1, len(items)):
-            if concatenate_1(answer, items[i]) == "error":
-                return "error"
+                answer=concatenate_0(answer,items[i])
+        return(answer)                           #axis=0时,多矩阵列数不变拼接
+    elif axis==1:
+        for i in range(1,len(items)):
+            if concatenate_1(answer,items[i])=='error':
+                return('error')
             else:
-                answer = concatenate_1(answer, items[i])
-        return answer  # axis=1时,多矩阵行数不变拼接
+                answer=concatenate_1(answer,items[i])
+        return(answer)                           #axis=1时,多矩阵行数不变拼接
     else:
-        return "error"
+        return('error')
 
 
 def vectorize(func):
@@ -793,23 +821,19 @@ def vectorize(func):
         >>> [[1, 1]
              [2, 2]]
     """
-
     def F(x):
-        if x == None:
-            return None
+        if x.data==None:
+            return(Matrix(None))
         else:
-            answer = []
-            m = len(x)
-            n = len(x[0])
+            answer=[]
+            [m,n]=x.dim
             for i in range(m):
-                list1 = []
+                list1=[]
                 for j in range(n):
-                    list1.append(func(x[i][j]))
-                answer.append(list1)  # 对列表中每一个元素进行func运算
-        return answer
-
-    return F
-
+                    list1.append(func(x.data[i][j]))
+                answer.append(list1)            #对列表中每一个元素进行func运算
+        return(Matrix(answer))
+    return(F)
 
 if __name__ == "__main__":
     print("test here")
