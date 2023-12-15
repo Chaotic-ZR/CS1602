@@ -355,7 +355,7 @@ class Matrix:
             Matrix: 运算结果
         """
         # 需调用dot函数
-        B = self
+        B = self  # 创建矩阵的副本，对其进行操作
         for i in range(n - 1):
             B = Matrix.dot(self)
         return B
@@ -371,12 +371,11 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        # 与__mul__方法相同
-        B = self.data
+        B = self.data  # 创建矩阵的副本，对其进行操作
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] += other.data[i][j]
-        B = Matrix(data=B)
+        B = Matrix(data=B)  # 将B化为矩阵
         return B
 
     def __sub__(self, other):
@@ -390,11 +389,11 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        B = self.data
+        B = self.data.copy()  # 创建矩阵的副本，对其进行操作
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] -= other.data[i][j]
-        B = Matrix(data=B)
+        B = Matrix(data=B)  # 将B化为矩阵
         return B
 
     def __mul__(self, other):
@@ -415,10 +414,11 @@ class Matrix:
         """
         hang = len(self.data)
         lie = len(self.data[0])
-        lst = self.copy()
+        lst = self.data.copy()
         for i in range(hang):
             for j in range(lie):
-                lst[i][j] = self[i][j] * other[i][j]
+                lst[i][j] = self.data[i][j] * other.data[i][j]  # 遍历行数和列数，对应位置相乘
+        lst = Matrix(data=lst)  # 将所得列表化为矩阵
         return lst
 
     def __len__(self):
@@ -453,8 +453,9 @@ class Matrix:
             a[i] = max(len(str(lst0[i])))
             for j in range(hang - 1):
                 print(str(lst[j][i].rjust(a[i], end="")))
-            print("]\n [")
-            print(str(lst[hang - 1][i].rjust(a[i], end="")))
+            print(
+                "]\n ["
+            )  # 每一个元素都以其所在行最大数量级进行右对齐，在每一行（除了最后一行）补上“】”，换行后再打印“【”            print(str(lst[hang-1][i].rjust(a[i],end="")))
             print("]]")
 
     def det(self):
@@ -466,20 +467,22 @@ class Matrix:
         Returns:
             一个 Python int 或者 float, 表示计算结果
         """
-        # 加入报错内容
+        #
         lst = self.data.copy()
+        if len(lst) != len(lst[0]):
+            raise TypeError
         n = len(lst)
 
         def hangcheng(lst, k):
             lt = lst.copy()
             for i in range(len(lst)):
                 lt[i] = k * lt[i]
-            return lt
+            return lt  # 将某一行乘以k倍
 
         def hangjian(lst1, lst2):  # lst2-lst1
             for i in range(len(lst1)):
                 lst2[i] = lst2[i] - lst1[i]
-            return lst2
+            return lst2  # 将lst2变为lst2-lst1
 
         numi = 0
         numj = 0
@@ -490,18 +493,18 @@ class Matrix:
                         lst0 = lst[numi].copy()
                         lst[numi] = lst[i]
                         lst[i] = lst0
-                        break
+                        break  # 将首个对应位置非零行的置顶
             for i in range(numi + 1, n):
                 if lst[i][numj] != 0:
                     k = lst[i][numj] / lst[numi][numj]
                     lt = hangcheng(lst[numi], k)
-                    lst[i] = hangjian(lt, lst[i])
+                    lst[i] = hangjian(lt, lst[i])  # 化为行阶梯矩阵
             numi += 1
-            numj += 1
+            numj += 1  # 多次循环操作n次，刚好完全化为上三角矩阵
         ji = 1
         for i in range(n):
             ji *= lst[i][i]
-        return ji
+        return ji  # 计算主对角线元素的乘积
 
     def inverse(self):
         r"""
@@ -512,6 +515,9 @@ class Matrix:
         Returns:
             Matrix: 一个 Matrix 实例，表示逆矩阵
         """
+        B = self
+        if B.det() == 0:
+            raise TypeError
         n = len(self.data)
         lst = self.data.copy()
         storage = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
@@ -547,14 +553,14 @@ class Matrix:
                 if lst[i][numj] != 0:
                     k = lst[i][numj] / lst[numi][numj]
                     lt = hangcheng(lst[numi], k)
-                    lst[i] = hangjian(lt, lst[i])
+                    lst[i] = hangjian(lt, lst[i])  # 化为行阶梯矩阵
             numi += 1
-            numj += 1
+            numj += 1  # 多次循环操作n次，刚好完全化为简化行阶梯矩阵
         for i in range(len(lst)):
             if lst[i][i] != 1:
                 k = 1 / lst[i][i]
-                lst[i] = hangcheng(lst[i], k)
-        return lst
+                lst[i] = hangcheng(lst[i], k)  # 把每一行第一个非零元素化为1
+        return Matrix(data=lst)
 
     def rank(self):
         r"""
@@ -572,12 +578,12 @@ class Matrix:
             lt = lst.copy()
             for i in range(len(lst)):
                 lt[i] *= k
-            return lt
+            return lt  # 将某一行乘以k倍
 
         def hangjian(lst1, lst2):  # lst2-lst1
             for i in range(len(lst1)):
                 lst2[i] -= lst1[i]
-            return lst2
+            return lst2  # 将lst2变为lst2-lst1
 
         lst = self.data.copy()
         numi = 0
@@ -589,19 +595,19 @@ class Matrix:
                         lst0 = lst[numi].copy()
                         lst[numi] = lst[i]
                         lst[i] = lst0
-                        break
+                        break  # 将首个对应位置非0的行置顶
             for i in range(numi + 1, hang):
                 if lst[i][numj] != 0:
                     k = lst[i][numj] / lst[numi][numj]
                     lt = hangcheng(lst[numi], k)
-                    lst[i] = hangjian(lt, lst[i])
+                    lst[i] = hangjian(lt, lst[i])  # 化为行阶梯矩阵
             numi += 1
-            numj += 1
+            numj += 1  # 多次循环操作n次，刚好完全化为行阶梯矩阵
         r = 0
         for row in range(len(lst)):
             if lst[row].count(0) != lie:
                 r += 1
-        return r
+        return r  # 统计非零行的数目
 
         # if hang>lie:
         # self取转置重新讨论即可
@@ -627,7 +633,7 @@ def narray(dim, init_value=1):  # dim (,,,,,), init为矩阵元素初始值
         Matrix: 一个 Matrix 类型的实例
     """
     list1 = []
-    if dim[0] == 0 or dim[1] == 0:
+    if dim[0] == 0 or dim[1] == 0:  # 不能产生零行零列的矩阵
         return Matrix(None, None, 1)
     else:
         for i in range(dim[0]):
@@ -682,7 +688,7 @@ def zeros_like(matrix):
         >>> [[0 0 0]
              [0 0 0]]
     """
-    if matrix.data == None:
+    if matrix.data == None:  # none矩阵返回none矩阵
         return None
     else:
         return zeros(matrix.dim)  # 返回一个形状和matrix一样 的全0 narray
@@ -701,7 +707,7 @@ def ones_like(matrix):
     返回一个维数和matrix一样 的全1 narray
     类同 zeros_like
     """
-    if matrix.data == None:
+    if matrix.data == None:  # none矩阵返回none矩阵
         return None
     else:
         return ones(matrix.dim)  # 返回一个维数和matrix一样 的全1 narray
@@ -752,47 +758,47 @@ def concatenate(items, axis=0):
     """
 
     def concatenate_0(A, B):
-        if A.data == None and B.data == None:
+        if A.data == None and B.data == None:  # 两矩阵均为none拼接后仍为none
             return Matrix(None)
-        elif not (A.data == None or B.data == None):
-            if len(A.data[0]) == len(B.data[0]):
+        elif not (A.data == None or B.data == None):  # 两矩阵均不为none
+            if len(A.data[0]) == len(B.data[0]):  # 列数相等,可拼接
                 return Matrix(A.data + B.data)
-            else:
+            else:  # 列数不等,不可拼接
                 return "error"
         else:
             return "error"  # axis=0时,两矩阵列数不变拼接
 
     def concatenate_1(A, B):
-        if A.data == None and B.data == None:
+        if A.data == None and B.data == None:  # 两矩阵均为none拼接后仍为none
             return Matrix(None)
-        elif not (A.data == None or B.data == None):
-            if len(A.data) == len(B.data):
+        elif not (A.data == None or B.data == None):  ##两矩阵均不为none
+            if len(A.data) == len(B.data):  # 行数相等,可拼接
                 answer = []
                 for i in range(len(A.data)):
                     answer.append(A.data[i] + B.data[i])
                 return Matrix(answer)
-            else:
+            else:  # 行数不等,不可拼接
                 return "error"
         else:
             return "error"  # axis=1时,两矩阵行数不变拼接
 
     answer = items[0]
     if axis == 0:
-        for i in range(1, len(items)):
-            if concatenate_0(answer, items[i]) == "error":
-                return "error"
+        for i in range(1, len(items)):  # 重复进行两矩阵拼接
+            if concatenate_0(answer, items[i]) == "error":  # 出现不可拼接的情况,报错
+                raise ValueError
             else:
                 answer = concatenate_0(answer, items[i])
         return answer  # axis=0时,多矩阵列数不变拼接
     elif axis == 1:
-        for i in range(1, len(items)):
-            if concatenate_1(answer, items[i]) == "error":
-                return "error"
+        for i in range(1, len(items)):  # 重复进行两矩阵拼接
+            if concatenate_1(answer, items[i]) == "error":  # 出现不可拼接的情况,报错
+                raise ValueError
             else:
                 answer = concatenate_1(answer, items[i])
         return answer  # axis=1时,多矩阵行数不变拼接
     else:
-        return "error"
+        raise ValueError
 
 
 def vectorize(func):
@@ -828,12 +834,12 @@ def vectorize(func):
     """
 
     def F(x):
-        if x.data == None:
+        if x.data == None:  # none矩阵返回none矩阵
             return Matrix(None)
         else:
             answer = []
             [m, n] = x.dim
-            for i in range(m):
+            for i in range(m):  # 对matrix中每一个元素进行func运算
                 list1 = []
                 for j in range(n):
                     list1.append(func(x.data[i][j]))
@@ -855,7 +861,7 @@ if __name__ == "__main__":
 # kp = m1.Kronecker_product(m2)
 # print(kp.data)
 
-# get_item test
+# # get_item test
 # x = Matrix(data=[
 #                 [0, 1, 2, 3],
 #                 [4, 5, 6, 7],
@@ -864,8 +870,8 @@ if __name__ == "__main__":
 # y = x[:, :2]
 # print(y.data)
 
-# set_item test
-x = Matrix(data=[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 0, 1]])
+# # set_item test
+# x = Matrix(data=[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 0, 1]])
 
-x[1:, 2:] = Matrix(data=[[1, 2], [3, 4]])
-print(x.data)
+# x[1:, 2:] = Matrix(data=[[1, 2], [3, 4]])
+# print(x.data)

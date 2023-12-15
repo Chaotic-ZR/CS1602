@@ -1,7 +1,9 @@
 import numpy as np
 
 # Define the matrices
-matrix1 = np.array([[1, 2], [3, 4]])
+matrix1 = np.array([[1, 2, 3],
+                    [6, 5, 3],
+                    [7, 8, 9]])
 matrix2 = np.array([[5, 6], [7, 8]])
 
 # Calculate the Kronecker product
