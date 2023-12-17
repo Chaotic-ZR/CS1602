@@ -445,18 +445,26 @@ class Matrix:
         # 需调用T函数
         hang, lie = len(self.data), len(self.data[0])
         B = Matrix.T(self)
-        lst0 = B.data
+        lst0 = B.data  # 取转置矩阵做辅助
         lst = self.data.copy()
-        a = [0] * lie
-        print("[[")
+        print("[[", end="")
+        useful_lst = []
         for i in range(lie):
-            a[i] = max(len(str(lst0[i])))
-            for j in range(hang - 1):
-                print(str(lst[j][i].rjust(a[i], end="")))
+            lt = []
+            for j in range(hang):
+                lt.append(len(str(lst0[i][j])))
+            a = max(lt)
+            useful_lst.append(a)  # 创建useful_lst列表，其中各项保存每一列中最大数的长度
+        for i in range(hang - 1):
+            for j in range(lie):
+                print(str(lst[i][j]).rjust(useful_lst[j]), end=" ")
+
             print(
-                "]\n ["
+                "]\n [", end=""
             )  # 每一个元素都以其所在行最大数量级进行右对齐，在每一行（除了最后一行）补上“】”，换行后再打印“【”            print(str(lst[hang-1][i].rjust(a[i],end="")))
-            print("]]")
+        for j in range(lie):
+            print(str(lst[hang - 1][j]).rjust(useful_lst[j]), end=" ")
+        print("]]")  # 最后一行另外讨论，方便在最后补上“]]”
 
     def det(self):
         r"""
@@ -571,8 +579,11 @@ class Matrix:
         Returns:
             一个 Python int 表示计算结果
         """
-        # 注：默认行数大于等于列数
         hang, lie = len(self.data), len(self.data[0])
+        if hang > lie:
+            B = self
+            B = B.T()
+            hang, lie = len(B.data), len(B.data[0])
 
         def hangcheng(lst, k):
             lt = lst.copy()
@@ -608,9 +619,6 @@ class Matrix:
             if lst[row].count(0) != lie:
                 r += 1
         return r  # 统计非零行的数目
-
-        # if hang>lie:
-        # self取转置重新讨论即可
 
 
 def I(n):
