@@ -445,25 +445,26 @@ class Matrix:
         # 需调用T函数
         hang, lie = len(self.data), len(self.data[0])
         B = Matrix.T(self)
-        lst0 = B.data                   #取转置矩阵做辅助
+        lst0 = B.data  # 取转置矩阵做辅助
         lst = self.data.copy()
-        useful_lst=[]
+        useful_lst = []
         for i in range(lie):
-            lt=[]
+            lt = []
             for j in range(hang):
                 lt.append(len(str(lst0[i][j])))
             a = max(lt)
-            useful_lst.append(a)            #创建useful_lst列表，其中各项保存每一列中最大数的长度
-        str0="[["
-        for i in range(hang-1):
+            useful_lst.append(a)  # 创建useful_lst列表，其中各项保存每一列中最大数的长度
+        str0 = "[["
+        for i in range(hang - 1):
             for j in range(lie):
-                str0+=" "*(useful_lst[j]-len(str(lst[i][j]))+1)+str(lst[i][j])
-            str0+="]\n ["
+                str0 += " " * (useful_lst[j] - len(str(lst[i][j])) + 1) + str(lst[i][j])
+            str0 += "]\n ["
         for j in range(lie):
-            str0+=" "*(useful_lst[j]-len(str(lst[hang-1][j]))+1)+str(lst[hang-1][j])
-        str0+="]]"
+            str0 += " " * (useful_lst[j] - len(str(lst[hang - 1][j])) + 1) + str(
+                lst[hang - 1][j]
+            )
+        str0 += "]]"
         return str0
-
 
     def det(self):
         r"""
@@ -579,19 +580,22 @@ class Matrix:
             一个 Python int 表示计算结果
         """
         hang, lie = len(self.data), len(self.data[0])
-        if hang>lie:
-            B=self
-            B=B.T()
-            hang,lie=len(B.data),len(B.data[0])
+        if hang > lie:
+            B = self
+            B = B.T()
+            hang, lie = len(B.data), len(B.data[0])
+
         def hangcheng(lst, k):
             lt = lst.copy()
             for i in range(len(lst)):
                 lt[i] *= k
             return lt  # 将某一行乘以k倍
+
         def hangjian(lst1, lst2):  # lst2-lst1
             for i in range(len(lst1)):
                 lst2[i] -= lst1[i]
             return lst2  # 将lst2变为lst2-lst1
+
         lst = self.data.copy()
         numi = 0
         numj = 0
