@@ -14,9 +14,7 @@ def print_m(data):
 
 # ~~~~~~~~~~~~~~1. Basic Test~~~~~~~~~~~~~~~
 # 1. define the matrix
-mat = mm.Matrix(data=[[1, 2, 3], 
-                      [6, 5, 4], 
-                      [7, 8, 9]])
+mat = mm.Matrix(data=[[1, 2, 3], [6, 5, 4], [7, 8, 9]])
 print(f"mat:\n{mat}\n")
 
 # 2. shape
@@ -69,6 +67,7 @@ copy_mat[1:, 2:] = mm.Matrix([[0], [0]])
 print(f"另一赋值测试\n{copy_mat}\n")
 
 
+print(mat)
 # # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
 
 # # ~~~~~~~~~~~~~~3. zeros() test~~~~~~~~~~~~~~~

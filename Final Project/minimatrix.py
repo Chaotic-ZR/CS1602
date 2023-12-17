@@ -2,7 +2,7 @@
 # Fan Cheng, 2022
 
 import random
-
+import copy
 
 class Matrix:
     r"""
@@ -193,7 +193,8 @@ class Matrix:
         Returns:
             Matrix: 一个self的备份
         """
-        return Matrix(data=self.data)
+        copy_data = copy.deepcopy(self.data)
+        return Matrix(data=copy_data)
 
     def Kronecker_product(self, other):
         r"""
