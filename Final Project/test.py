@@ -1,22 +1,11 @@
-mat = [[1, 2, 3],
-       [6, 5, 4],
-       [7, 8, 9]]
+import numpy as np
 
-def matrix_to_string(matrix):
-    rows = len(matrix)
-    cols = len(matrix[0])
-    matrix_str = ""
+# Define the matrices
+matrix1 = np.array([[1, 2, 3], [6, 5, 4], [7, 8, 9]])
+matrix2 = np.array([[5, 6], [7, 8]])
 
-    # Find the maximum length of each element in the matrix
-    max_length = max(len(str(matrix[i][j])) for i in range(rows) for j in range(cols))
+# Calculate the Kronecker product
+result = np.kron(matrix1, matrix2)
 
-    for i in range(rows):
-        matrix_str += "["
-        for j in range(cols):
-            # Right-align each element by adding spaces before it
-            element_str = str(matrix[i][j]).rjust(max_length)
-            matrix_str += element_str + " "
-        matrix_str += "]\n"
-    return matrix_str
-
-print(matrix_to_string(mat))
+# Print the result
+print(result)

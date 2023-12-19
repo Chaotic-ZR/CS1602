@@ -4,6 +4,7 @@
 import random
 import copy
 
+
 class Matrix:
     r"""
     自定义的二维矩阵类
@@ -358,7 +359,7 @@ class Matrix:
         # 需调用dot函数
         B = self  # 创建矩阵的副本，对其进行操作
         for i in range(n - 1):
-            B = Matrix.dot(self)
+            B = Matrix.dot(B, self)
         return B
 
     def __add__(self, other):
@@ -372,7 +373,7 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        B = self.data  # 创建矩阵的副本，对其进行操作
+        B = copy.deepcopy(self.data)  # 创建矩阵的副本，对其进行操作
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] += other.data[i][j]
@@ -390,7 +391,7 @@ class Matrix:
         Returns:
             Matrix: 运算结果
         """
-        B = self.data.copy()  # 创建矩阵的副本，对其进行操作
+        B = copy.deepcopy(self.data)  # 创建矩阵的副本，对其进行操作
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] -= other.data[i][j]
@@ -415,7 +416,7 @@ class Matrix:
         """
         hang = len(self.data)
         lie = len(self.data[0])
-        lst = self.data.copy()
+        lst = copy.deepcopy(self.data)
         for i in range(hang):
             for j in range(lie):
                 lst[i][j] = self.data[i][j] * other.data[i][j]  # 遍历行数和列数，对应位置相乘
@@ -626,7 +627,8 @@ def I(n):
     """
     return an n*n unit matrix
     """
-    return [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+    I_data = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+    return Matrix(data=I_data)
 
 
 # ~~~~~~~~~~~~~~the third part~~~~~~~~~~~~~~~
