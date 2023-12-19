@@ -3,6 +3,7 @@
 
 import random
 import copy
+import time
 
 
 class Matrix:
@@ -478,6 +479,7 @@ class Matrix:
             一个 Python int 或者 float, 表示计算结果
         """
         #
+        begin=time.time()
         lst = copy.deepcopy(self.data)
         if len(lst) != len(lst[0]):
             raise TypeError
@@ -514,6 +516,7 @@ class Matrix:
         ji = 1
         for i in range(n):
             ji *= lst[i][i]
+        end=time.time()
         return ji  # 计算主对角线元素的乘积
 
     def inverse(self):
@@ -570,7 +573,10 @@ class Matrix:
             if lst[i][i] != 1:
                 k = 1 / lst[i][i]
                 lst[i] = hangcheng(lst[i], k)  # 把每一行第一个非零元素化为1
-        return Matrix(data=lst)
+        newlst=[[]]*n
+        for i in range(n):
+            newlst[i]=lst[i][n:]
+        return Matrix(data=newlst)
 
     def rank(self):
         r"""
@@ -886,3 +892,4 @@ if __name__ == "__main__":
 
 # x[1:, 2:] = Matrix(data=[[1, 2], [3, 4]])
 # print(x.data)
+
