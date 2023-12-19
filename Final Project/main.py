@@ -99,54 +99,39 @@ print(f"矩阵的秩为：\n{mat.rank()}\n")
 print(f"5阶单位矩阵为：\n{mm.I(5)}\n")
 
 print(mat)
-# 21. narray
-print(f"三行二列的矩阵为:\n{mm.narray((2, 3))}\n")
+#21. narray
+print(f"三行二列的矩阵为:\n{mm.narray([3,2])}\n")
 
-# 22. arange
+#22. arange
 print(f"range(1,9,2)的矩阵为:\n{mm.arange(1,9,2)}\n")
 
-# 23. zeros
-print(f"三行二列的零矩阵为:\n{mm.zeros((2, 3))}\n")
+#23. zeros
+print(f"三行二列的零矩阵为:\n{mm.zeros([3,2])}\n")
 
-# 24. zeros_like
-print(
-    f"与mat形状相同的零矩阵为:\n{mm.zeros_like(mat)}\n"
-)
+#24. zeros_like
+print(f"与mat形状相同的零矩阵为:\n{mm.zeros_like(mat)}\n")
 
-# 25. ones
-print(f"三行二列的一矩阵为:\n{mm.ones((2, 3))}\n")
+#25. ones
+print(f"三行二列的一矩阵为:\n{mm.ones([3,2])}\n")
 
-# 26. ones_like
-print(
-    f"与mat形状相同的一矩阵为:\n{mm.ones_like(mat)}\n"
-)
+#26. ones_like
+print(f"与mat形状相同的一矩阵为:\n{mm.ones_like(mat)}\n")
 
-# 27. nrandom
-print(f"三行二列的随机矩阵为:\n{mm.nrandom((2, 3))}\n")
+#27. nrandom
+print(f"三行二列的随机矩阵为:\n{mm.nrandom([3,2])}\n")
 
-# 28. nrandom_like
-print(
-    f"与mat形状相同的随机矩阵为:\n{mm.nrandom_like(mat)}\n"
-)
+#28. nrandom_like
+print(f"与mat形状相同的随机矩阵为:\n{mm.nrandom_like(mat)}\n")
 
-# 29. concatenate
+#29. concatenate
 A, B = mm.Matrix([[0, 1, 2]]), mm.Matrix([[3, 4, 5]])
-print(
-    f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])纵向拼接的结果为:\n{mm.concatenate((A,B))}\n"
-)
-print(
-    f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])横向拼接A,B,A的结果为:\n{mm.concatenate((A,B,A),1)}\n"
-)
+print(f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])纵向拼接的结果为:\n{mm.concatenate((A,B))}\n")
+print(f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])横向拼接A,B,A的结果为:\n{mm.concatenate((A,B,A),1)}\n")
 
-
-# 30. vectorize
+#30. vectorize
 def func(x):
     return x**2
-
-
-print(
-    f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n"
-)
+print(f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n")
 # # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
 # m24 = mm.arange(0, 24, 1)
 # print(f"m24为:\n{m24}\n")
