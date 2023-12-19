@@ -735,9 +735,13 @@ def nrandom(dim):
     返回一个维数为dim 的随机 narray
     参数与返回值类型同 zeros
     """
-    a = random.random()
-    return narray(dim, a)  # 返回一个维数为dim 的随机 narray
-
+    list1=[]
+    for i in range(dim[0]):
+        list2=[]
+        for j in range(dim[1]):
+            list2.append(random.random())
+        list1.append(list2)
+    return Matrix(list1)  # 返回一个维数为dim 的随机 narray
 
 def nrandom_like(matrix):
     r"""
