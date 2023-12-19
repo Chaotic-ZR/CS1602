@@ -627,7 +627,8 @@ def I(n):
     """
     return an n*n unit matrix
     """
-    return [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+    I_data = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
+    return Matrix(data=I_data)
 
 
 # ~~~~~~~~~~~~~~the third part~~~~~~~~~~~~~~~
