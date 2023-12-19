@@ -147,7 +147,6 @@ def func(x):
 print(
     f"将函数f(x)=x**2作用与矩阵Matrix([[1, 2, 3],[2, 3, 1]])的结果为:\n{mm.vectorize(func)(mm.Matrix([[1, 2, 3],[2, 3, 1]]))}\n"
 )
-
 # # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
 # m24 = mm.arange(0, 24, 1)
 # print(f"m24为:\n{m24}\n")

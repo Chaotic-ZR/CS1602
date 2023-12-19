@@ -359,7 +359,7 @@ class Matrix:
         # 需调用dot函数
         B = self  # 创建矩阵的副本，对其进行操作
         for i in range(n - 1):
-            B = Matrix.dot(B, self)
+            B = Matrix.dot(B,self)
         return B
 
     def __add__(self, other):
@@ -377,7 +377,7 @@ class Matrix:
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] += other.data[i][j]
-        B = Matrix(data=B)  # 将B化为矩阵
+        B = Matrix(data=B)  # 将B化为矩阵       
         return B
 
     def __sub__(self, other):
@@ -478,7 +478,7 @@ class Matrix:
             一个 Python int 或者 float, 表示计算结果
         """
         #
-        lst = self.data.copy()
+        lst = copy.deepcopy(self.data)
         if len(lst) != len(lst[0]):
             raise TypeError
         n = len(lst)
@@ -529,7 +529,7 @@ class Matrix:
         if B.det() == 0:
             raise TypeError
         n = len(self.data)
-        lst = self.data.copy()
+        lst = copy.deepcopy(self.data)
         storage = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
         for i in range(n):
             lst[i].extend(storage[i])  # 合并矩阵与单位矩阵
@@ -585,7 +585,7 @@ class Matrix:
         if hang > lie:
             B = self
             B = B.T()
-            hang, lie = len(B.data), len(B.data[0])
+            hang, lie = len(copy.deepcopy(B.data)), len(copy.deepcopy(B.data[0]))
 
         def hangcheng(lst, k):
             lt = lst.copy()
@@ -598,7 +598,7 @@ class Matrix:
                 lst2[i] -= lst1[i]
             return lst2  # 将lst2变为lst2-lst1
 
-        lst = self.data.copy()
+        lst = copy.deepcopy(self.data)
         numi = 0
         numj = 0
         while numi <= hang - 1:
@@ -627,8 +627,7 @@ def I(n):
     """
     return an n*n unit matrix
     """
-    I_data = [[0 if i != j else 1 for j in range(n)] for i in range(n)]
-    return Matrix(data=I_data)
+    return [[0 if i != j else 1 for j in range(n)] for i in range(n)]
 
 
 # ~~~~~~~~~~~~~~the third part~~~~~~~~~~~~~~~
