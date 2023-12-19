@@ -448,7 +448,7 @@ class Matrix:
         hang, lie = len(self.data), len(self.data[0])
         B = Matrix.T(self)
         lst0 = B.data  # 取转置矩阵做辅助
-        lst = self.data.copy()
+        lst = copy.deepcopy(self.data)
         useful_lst = []
         for i in range(lie):
             lt = []
@@ -484,7 +484,7 @@ class Matrix:
         n = len(lst)
 
         def hangcheng(lst, k):
-            lt = lst.copy()
+            lt = copy.deepcopy(lst)
             for i in range(len(lst)):
                 lt[i] = k * lt[i]
             return lt  # 将某一行乘以k倍
@@ -535,7 +535,7 @@ class Matrix:
             lst[i].extend(storage[i])  # 合并矩阵与单位矩阵
 
         def hangcheng(lst, k):
-            lt = lst.copy()
+            lt = copy.deepcopy(lst)
             for i in range(len(lst)):
                 lt[i] *= k
             return lt
@@ -585,10 +585,10 @@ class Matrix:
         if hang > lie:
             B = self
             B = B.T()
-            hang, lie = len(copy.deepcopy(B.data)), len(copy.deepcopy(B.data[0]))
+            hang, lie = len(B.data), len(B.data[0])
 
         def hangcheng(lst, k):
-            lt = lst.copy()
+            lt = copy.deepcopy(lst)
             for i in range(len(lst)):
                 lt[i] *= k
             return lt  # 将某一行乘以k倍
