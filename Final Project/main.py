@@ -110,7 +110,7 @@ print(f"三行二列的零矩阵为:\n{mm.zeros((2, 3))}\n")
 
 # 24. zeros_like
 print(
-    f"与A = Matrix(data=[[1, 2, 3], [2, 3, 4]])形状相同的零矩阵为:\n{mm.zeros_like(mm.Matrix([[1, 2, 3], [2, 3, 4]]))}\n"
+    f"与mat形状相同的零矩阵为:\n{mm.zeros_like(mat)}\n"
 )
 
 # 25. ones
@@ -118,7 +118,7 @@ print(f"三行二列的一矩阵为:\n{mm.ones((2, 3))}\n")
 
 # 26. ones_like
 print(
-    f"与A = Matrix(data=[[1, 2, 3], [2, 3, 4]])形状相同的一矩阵为:\n{mm.ones_like(mm.Matrix([[1, 2, 3], [2, 3, 4]]))}\n"
+    f"与mat形状相同的一矩阵为:\n{mm.ones_like(mat)}\n"
 )
 
 # 27. nrandom
@@ -126,7 +126,7 @@ print(f"三行二列的随机矩阵为:\n{mm.nrandom((2, 3))}\n")
 
 # 28. nrandom_like
 print(
-    f"与A = Matrix(data=[[1, 2, 3], [2, 3, 4]])形状相同的随机矩阵为:\n{mm.nrandom_like(mm.Matrix([[1, 2, 3], [2, 3, 4]]))}\n"
+    f"与mat形状相同的随机矩阵为:\n{mm.nrandom_like(mat)}\n"
 )
 
 # 29. concatenate
@@ -145,7 +145,7 @@ def func(x):
 
 
 print(
-    f"将函数f(x)=x**2作用与矩阵Matrix([[1, 2, 3],[2, 3, 1]])的结果为:\n{mm.vectorize(func)(mm.Matrix([[1, 2, 3],[2, 3, 1]]))}\n"
+    f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n"
 )
 # # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
 # m24 = mm.arange(0, 24, 1)
