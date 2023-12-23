@@ -154,25 +154,27 @@ print(f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n
 
 
 # # ~~~~~~~~~~~~~~6. 最小二乘问题~~~~~~~~~~~~~~~
-# m = 1000
-# n = 100
-# X = mm.nrandom((m, n))
-# w = mm.nrandom((n, 1))
-# e = mm.nrandom((m, 1))
+m = 1000
+n = 100
+X = mm.nrandom((m, n))
+w = mm.nrandom((n, 1))
+e = mm.nrandom((m, 1))
 
-# # 将e变成零均值
-# e_value_list = [row[0] for row in e.data]
-# sum_e = sum(e_value_list) - e_value_list[m-1]
-# e[m-1, 0] = sum_e
+# 将e变成零均值
+e_value_list = [row[0] for row in e.data]
+sum_e = sum(e_value_list) - e_value_list[m-1]
+e[m-1, 0] = sum_e
 
-# # 计算w_hat
-# Y = X.dot(w) + e
+# 计算w_hat
+Y = X.dot(w) + e
 # print(Y)
 # a = X.T().dot(X)
-# print(a.inverse())
-# # w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
-# # dif_w = w_hat - w
-# # print(dif_w)
+# w_hat = (a.inverse()).dot(X.T())
+# w_hat = w_hat.dot(Y)
+print(w)
+w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
+dif_w = w_hat - w
+print(dif_w)
 
 
 # # The following code is only for your reference
