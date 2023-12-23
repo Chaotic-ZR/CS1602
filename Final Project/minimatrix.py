@@ -739,7 +739,7 @@ def nrandom(dim):
     for i in range(dim[0]):
         list2=[]
         for j in range(dim[1]):
-            list2.append(random.randint(1, 100))
+            list2.append(random.random())
         list1.append(list2)
     return Matrix(list1)  # 返回一个维数为dim 的随机 narray
 
