@@ -132,49 +132,46 @@ print(f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])横向拼接A,B,A的结果
 def func(x):
     return x**2
 print(f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n")
-# # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
-# m24 = mm.arange(0, 24, 1)
-# print(f"m24为:\n{m24}\n")
-# print(f"m24变换为(3, 8)是:\n{m24.reshape((3, 8))}\n")
-# print(f"m24变换为(24, 1)是:\n{m24.reshape((24, 1))}\n")
-# print(f"m24变换为(4, 6)是:\n{m24.reshape((4, 6))}\n")
 
-# # ~~~~~~~~~~~~~~3. zeros() test~~~~~~~~~~~~~~~
-# print(f"3*3维的0矩阵是:\n{mm.zeros((3, 3))}\n")
-# print(f"m24的zeros_like为:\n{mm.zeros_like(m24)}\n")
+# ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
+m24 = mm.arange(0, 24, 1)
+print(f"m24为:\n{m24}\n")
+print(f"m24变换为(3, 8)是:\n{m24.reshape((3, 8))}\n")
+print(f"m24变换为(24, 1)是:\n{m24.reshape((24, 1))}\n")
+print(f"m24变换为(4, 6)是:\n{m24.reshape((4, 6))}\n")
+
+# ~~~~~~~~~~~~~~3. zeros() test~~~~~~~~~~~~~~~
+print(f"3*3维的0矩阵是:\n{mm.zeros((3, 3))}\n")
+print(f"m24的zeros_like为:\n{mm.zeros_like(m24)}\n")
 
 
-# # ~~~~~~~~~~~~~~4. ones() test~~~~~~~~~~~~~~~
-# print(f"(3, 3)的全1矩阵是:\n{mm.ones((3, 3))}\n")
-# print(f"ones_like(m24)是:\n{mm.ones_like(m24)}\n")
+# ~~~~~~~~~~~~~~4. ones() test~~~~~~~~~~~~~~~
+print(f"(3, 3)的全1矩阵是:\n{mm.ones((3, 3))}\n")
+print(f"ones_like(m24)是:\n{mm.ones_like(m24)}\n")
 
-# # ~~~~~~~~~~~~~~5. nrandom() test~~~~~~~~~~~~~~~
-# print(f"3*3的随机矩阵:\n{mm.nrandom((3, 3))}\n")
-# print(f"m24的nrandom_like为:\n{mm.nrandom_like(m24)}\n")
+# ~~~~~~~~~~~~~~5. nrandom() test~~~~~~~~~~~~~~~
+print(f"3*3的随机矩阵:\n{mm.nrandom((3, 3))}\n")
+print(f"m24的nrandom_like为:\n{mm.nrandom_like(m24)}\n")
 
 
 # # ~~~~~~~~~~~~~~6. 最小二乘问题~~~~~~~~~~~~~~~
-m = 1000
-n = 100
-X = mm.nrandom((m, n))
-w = mm.nrandom((n, 1))
-e = mm.nrandom((m, 1))
+# m = 1000
+# n = 100
+# X = mm.nrandom((m, n))
+# w = mm.nrandom((n, 1))
+# e = mm.nrandom((m, 1))
 
-# 将e变成零均值
-e_value_list = [row[0] for row in e.data]
-sum_e = sum(e_value_list) - e_value_list[m-1]
-e[m-1, 0] = sum_e
+# # 将e变成零均值
+# e_value_list = [row[0] for row in e.data]
+# sum_e = sum(e_value_list) - e_value_list[m-1]
+# e[m-1, 0] = sum_e
 
-# 计算w_hat
-Y = X.dot(w) + e
-# print(Y)
-# a = X.T().dot(X)
-# w_hat = (a.inverse()).dot(X.T())
-# w_hat = w_hat.dot(Y)
-print(w)
-w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
-dif_w = w_hat - w
-print(dif_w)
+# # 计算w_hat
+# Y = X.dot(w) + e
+# print(w)
+# w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
+# dif_w = w_hat - w
+# print(dif_w)
 
 
 # # The following code is only for your reference
