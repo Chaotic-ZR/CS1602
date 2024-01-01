@@ -3,13 +3,6 @@
 
 import minimatrix as mm
 
-
-def print_m(data):
-    for row in data:
-        print(row)
-    return
-
-
 # Test your code here!
 
 # ~~~~~~~~~~~~~~1. Basic Test~~~~~~~~~~~~~~~
@@ -99,40 +92,46 @@ print(f"矩阵的秩为：\n{mat.rank()}\n")
 print(f"5阶单位矩阵为：\n{mm.I(5)}\n")
 
 print(mat)
-#21. narray
+# 21. narray
 print(f"三行二列的矩阵为:\n{mm.narray([3,2])}\n")
 
-#22. arange
+# 22. arange
 print(f"range(1,9,2)的矩阵为:\n{mm.arange(1,9,2)}\n")
 
-#23. zeros
+# 23. zeros
 print(f"三行二列的零矩阵为:\n{mm.zeros([3,2])}\n")
 
-#24. zeros_like
+# 24. zeros_like
 print(f"与mat形状相同的零矩阵为:\n{mm.zeros_like(mat)}\n")
 
-#25. ones
+# 25. ones
 print(f"三行二列的一矩阵为:\n{mm.ones([3,2])}\n")
 
-#26. ones_like
+# 26. ones_like
 print(f"与mat形状相同的一矩阵为:\n{mm.ones_like(mat)}\n")
 
-#27. nrandom
+# 27. nrandom
 print(f"三行二列的随机矩阵为:\n{mm.nrandom([3,2])}\n")
 
-#28. nrandom_like
+# 28. nrandom_like
 print(f"与mat形状相同的随机矩阵为:\n{mm.nrandom_like(mat)}\n")
 
-#29. concatenate
+# 29. concatenate
 A, B = mm.Matrix([[0, 1, 2]]), mm.Matrix([[3, 4, 5]])
-print(f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])纵向拼接的结果为:\n{mm.concatenate((A,B))}\n")
-print(f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])横向拼接A,B,A的结果为:\n{mm.concatenate((A,B,A),1)}\n")
+print(
+    f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])纵向拼接的结果为:\n{mm.concatenate((A,B))}\n"
+)
+print(
+    f"A,B = Matrix([[0, 1, 2]]), Matrix([[3, 4, 5]])横向拼接A,B,A的结果为:\n{mm.concatenate((A,B,A),1)}\n"
+)
 
-#30. vectorize
+
+# 30. vectorize
 def func(x):
     return x**2
-print(f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n")
 
+
+print(f"将函数f(x)=x**2作用于mat的结果为:\n{mm.vectorize(func)(mat)}\n")
 # ~~~~~~~~~~~~~~2. arrange() test~~~~~~~~~~~~~~~
 m24 = mm.arange(0, 24, 1)
 print(f"m24为:\n{m24}\n")
@@ -154,40 +153,23 @@ print(f"3*3的随机矩阵:\n{mm.nrandom((3, 3))}\n")
 print(f"m24的nrandom_like为:\n{mm.nrandom_like(m24)}\n")
 
 
-# # ~~~~~~~~~~~~~~6. 最小二乘问题~~~~~~~~~~~~~~~
-# m = 1000
-# n = 100
-# X = mm.nrandom((m, n))
-# w = mm.nrandom((n, 1))
-# e = mm.nrandom((m, 1))
+# ~~~~~~~~~~~~~~6. 最小二乘问题~~~~~~~~~~~~~~~
+m = 1000
+n = 100
+X = mm.nrandom((m, n))
+w = mm.nrandom((n, 1))
+e = mm.nrandom((m, 1))
 
-# # 将e变成零均值
-# e_value_list = [row[0] for row in e.data]
-# sum_e = sum(e_value_list) - e_value_list[m-1]
-# e[m-1, 0] = sum_e
+# 将e变成零均值
+e_value_list = [row[0] for row in e.data]
+sum_e = sum(e_value_list) - e_value_list[m - 1]
+e[m - 1, 0] = sum_e
 
-# # 计算w_hat
-# Y = X.dot(w) + e
+# 计算w_hat
+Y = X.dot(w) + e
 # print(w)
-# w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
-# dif_w = w_hat - w
-# print(dif_w)
+w_hat = (X.T().dot(X)).inverse().dot(X.T()).dot(Y)
+dif_w = w_hat - w
+print(f"误差为:\n{dif_w}")
 
-
-# # The following code is only for your reference
-# # Please write the test code yourself
-
-
-# # a = mm.narray([4, 5])
-
-# # a = mm.I(10)
-# # print(a)
-
-# # print(a)
-# # print(a.shape())
-# # print(a.reshape([2, 6]))
-
-# # ma1 = mm.Matrix(2,3)
-# # ma2 = mm.Matrix(3,4)
-
-# # print(ma1 * ma2)
+# 最小二乘中由于随机生成的向量较小，相比之下误差显得较大，但是如果将随机生成的向量变得大一些，则最小二乘得出的结果会显得更合理（两种情况下误差大小接近）

@@ -173,7 +173,7 @@ class Matrix:
             ]
             sum_data = [[sum(list_of_element)]]
 
-        # sum by column(not finished, wait for the transpose)
+        # sum by column
         elif axis == 0:
             trans_matrix = self.T()
             sum_data = [[sum(row) for row in trans_matrix.data]]
@@ -360,7 +360,7 @@ class Matrix:
         # 需调用dot函数
         B = self  # 创建矩阵的副本，对其进行操作
         for i in range(n - 1):
-            B = Matrix.dot(B,self)
+            B = Matrix.dot(B, self)
         return B
 
     def __add__(self, other):
@@ -378,7 +378,7 @@ class Matrix:
         for i in range(len(self.data)):
             for j in range(len(self.data[0])):
                 B[i][j] += other.data[i][j]
-        B = Matrix(data=B)  # 将B化为矩阵       
+        B = Matrix(data=B)  # 将B化为矩阵
         return B
 
     def __sub__(self, other):
@@ -479,7 +479,7 @@ class Matrix:
             一个 Python int 或者 float, 表示计算结果
         """
         #
-        begin=time.time()
+        begin = time.time()
         lst = copy.deepcopy(self.data)
         if len(lst) != len(lst[0]):
             raise TypeError
@@ -516,7 +516,7 @@ class Matrix:
         ji = 1
         for i in range(n):
             ji *= lst[i][i]
-        end=time.time()
+        end = time.time()
         return ji  # 计算主对角线元素的乘积
 
     def inverse(self):
@@ -573,9 +573,9 @@ class Matrix:
             if lst[i][i] != 1:
                 k = 1 / lst[i][i]
                 lst[i] = hangcheng(lst[i], k)  # 把每一行第一个非零元素化为1
-        newlst=[[]]*n
+        newlst = [[]] * n
         for i in range(n):
-            newlst[i]=lst[i][n:]
+            newlst[i] = lst[i][n:]
         return Matrix(data=newlst)
 
     def rank(self):
@@ -735,13 +735,14 @@ def nrandom(dim):
     返回一个维数为dim 的随机 narray
     参数与返回值类型同 zeros
     """
-    list1=[]
+    list1 = []
     for i in range(dim[0]):
-        list2=[]
+        list2 = []
         for j in range(dim[1]):
             list2.append(random.random())
         list1.append(list2)
     return Matrix(list1)  # 返回一个维数为dim 的随机 narray
+
 
 def nrandom_like(matrix):
     r"""
@@ -874,26 +875,4 @@ if __name__ == "__main__":
     print("test here")
     pass
 
-
-# # Kronecker_product test
-# m1 = Matrix(data=[[1, 2], [3, 4]])
-# m2 = Matrix(data=[[5, 6], [7, 8]])
-
-# kp = m1.Kronecker_product(m2)
-# print(kp.data)
-
-# # get_item test
-# x = Matrix(data=[
-#                 [0, 1, 2, 3],
-#                 [4, 5, 6, 7],
-#                 [8, 9, 0, 1]
-#                     ])
-# y = x[:, :2]
-# print(y.data)
-
-# # set_item test
-# x = Matrix(data=[[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 0, 1]])
-
-# x[1:, 2:] = Matrix(data=[[1, 2], [3, 4]])
-# print(x.data)
 
